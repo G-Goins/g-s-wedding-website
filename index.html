@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sydney & Grant</title>
+  <title>Sydney & Grant | 05.01.2027</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
   <header class="site-header" id="siteHeader">
-    <a href="#home" class="brand">S + G | 08.02.25</a>
+    <a href="#home" class="brand">S + G</a>
 
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
-      ☰
-    </button>
-
-    <nav class="nav-links" id="navLinks">
+    <nav class="top-nav">
       <a href="#home">Home</a>
       <a href="#story">Our Story</a>
       <a href="#schedule">Schedule</a>
@@ -25,66 +26,67 @@
       <a href="#qa">Q&A</a>
     </nav>
 
-    <a class="rsvp-button" href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank">
-      RSVP
-    </a>
+    <a class="rsvp-button" href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank">RSVP</a>
   </header>
 
   <main>
     <section id="home" class="hero-section">
-      <div class="hero-overlay"></div>
-
       <div class="hero-content">
-        <p class="eyebrow">We’re Getting Married!</p>
+        <p class="eyebrow">We’re Getting Married</p>
         <h1>Sydney & Grant</h1>
-        <p class="date">08 . 02 . 25</p>
-        <p class="location">Ruckersville, VA</p>
+        <p class="wedding-date">May 1, 2027</p>
+        <p class="wedding-location">Ruckersville, Virginia</p>
       </div>
     </section>
 
-    <section id="story" class="content-section light-section">
-      <div class="section-inner two-column">
-        <div>
-          <h2>Our Story</h2>
-          <p>
-            Add your story here. This can be a few paragraphs about how you met,
-            your favorite memories together, the proposal, and what you are most
-            excited for as you celebrate with family and friends.
-          </p>
-        </div>
-
-        <img src="images/grant-sydney.jpg" alt="Sydney and Grant" class="section-photo" />
+    <section id="story" class="section story-section">
+      <div class="section-inner narrow">
+        <p class="section-kicker">Our Story</p>
+        <h2>How It All Began</h2>
+        <p>
+          Add your story here. This can be a few paragraphs about how you met,
+          your favorite memories together, the proposal, and what you are most
+          excited for as you celebrate with family and friends.
+        </p>
       </div>
     </section>
 
-    <section id="schedule" class="content-section blue-section">
+    <section id="schedule" class="section schedule-section">
       <div class="section-inner">
+        <p class="section-kicker">The Weekend</p>
         <h2>Schedule</h2>
 
-        <div class="cards">
-          <article class="card">
-            <h3>Ceremony</h3>
-            <p>Saturday, August 2, 2025</p>
-            <p>4:00 PM</p>
-          </article>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="time">4:00 PM</span>
+            <div>
+              <h3>Ceremony</h3>
+              <p>Saturday, May 1, 2027</p>
+            </div>
+          </div>
 
-          <article class="card">
-            <h3>Cocktail Hour</h3>
-            <p>Immediately following ceremony</p>
-            <p>Location details here</p>
-          </article>
+          <div class="timeline-item">
+            <span class="time">5:00 PM</span>
+            <div>
+              <h3>Cocktail Hour</h3>
+              <p>Immediately following the ceremony.</p>
+            </div>
+          </div>
 
-          <article class="card">
-            <h3>Reception</h3>
-            <p>Dinner, drinks, and dancing</p>
-            <p>6:00 PM</p>
-          </article>
+          <div class="timeline-item">
+            <span class="time">6:00 PM</span>
+            <div>
+              <h3>Reception</h3>
+              <p>Dinner, drinks, and dancing.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="travel" class="content-section light-section">
-      <div class="section-inner">
+    <section id="travel" class="section travel-section">
+      <div class="section-inner narrow">
+        <p class="section-kicker">Getting There</p>
         <h2>Travel & Stay</h2>
         <p>
           Add hotel block information, nearby lodging, transportation details,
@@ -93,44 +95,47 @@
       </div>
     </section>
 
-    <section id="things" class="content-section maroon-section">
+    <section id="things" class="section things-section">
       <div class="section-inner">
+        <p class="section-kicker">While You’re Here</p>
         <h2>Things To Do</h2>
 
-        <div class="cards">
-          <article class="card dark-card">
+        <div class="card-grid">
+          <article class="info-card">
             <h3>Restaurants</h3>
             <p>Add favorite local restaurants or coffee shops.</p>
           </article>
 
-          <article class="card dark-card">
+          <article class="info-card">
             <h3>Outdoors</h3>
-            <p>Add lakes, trails, parks, or activities nearby.</p>
+            <p>Add hikes, wineries, parks, or local activities.</p>
           </article>
 
-          <article class="card dark-card">
-            <h3>Local Favorites</h3>
+          <article class="info-card">
+            <h3>Favorites</h3>
             <p>Add any favorite spots guests may enjoy.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="registry" class="content-section light-section">
-      <div class="section-inner">
-        <h2>Registry</h2>
+    <section id="registry" class="section registry-section">
+      <div class="section-inner narrow">
+        <p class="section-kicker">Registry</p>
+        <h2>Your Presence Is Enough</h2>
         <p>
-          Your presence is the greatest gift. Registry details can be added here.
+          We are grateful to celebrate with you. Registry details can be added here.
         </p>
 
-        <a href="YOUR_REGISTRY_LINK_HERE" target="_blank" class="secondary-button">
+        <a href="YOUR_REGISTRY_LINK_HERE" target="_blank" class="outline-button">
           View Registry
         </a>
       </div>
     </section>
 
-    <section id="qa" class="content-section blue-section">
-      <div class="section-inner">
+    <section id="qa" class="section qa-section">
+      <div class="section-inner narrow">
+        <p class="section-kicker">Questions</p>
         <h2>Q&A</h2>
 
         <div class="faq-item">
@@ -154,14 +159,14 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div>
-        <h2>Location</h2>
+        <p class="section-kicker">Location</p>
+        <h2>Celebrate With Us</h2>
         <p>
           Swift Run Farm<br />
           6152 Mannahoc Way<br />
-          Ruckersville, VA 22968
+          Ruckersville, VA
         </p>
 
-        <h3>Contact</h3>
         <p>
           Email: grant@grantandsydney.com<br />
           Phone: (865)-202-2913
@@ -172,7 +177,7 @@
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3135.1903330374103!2d-78.44860598865223!3d38.205477587116164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b470f5ce64c105%3A0x2ffef94f368a5691!2s6152%20Mannahoc%20Way%2C%20Ruckersville%2C%20VA%2022968!5e0!3m2!1sen!2sus!4v1781963313298!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">"
           width="100%"
-          height="300"
+          height="320"
           style="border:0;"
           allowfullscreen=""
           loading="lazy">
