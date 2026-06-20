@@ -1,56 +1,185 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grant & Sydney</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sydney & Grant</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <header class="site-header" id="siteHeader">
+    <a href="#home" class="brand">S + G | 08.02.25</a>
 
-  <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+      ☰
+    </button>
 
-  <nav id="sidebar" class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="details.html">Details</a>
-    <a href="schedule.html">Schedule</a>
-    <a href="travel.html">Travel</a>
-    <a href="registry.html">Registry</a>
-    <a href="wedding-party.html">Wedding Party</a>
-    <a href="faq.html">FAQ</a>
-  </nav>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#story">Our Story</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#travel">Travel & Stay</a>
+      <a href="#things">Things To Do</a>
+      <a href="#registry">Registry</a>
+      <a href="#qa">Q&A</a>
+    </nav>
 
-  <main class="main-content">
-    <a class="rsvp-button" href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank">RSVP</a>
+    <a class="rsvp-button" href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank">
+      RSVP
+    </a>
+  </header>
 
-    <header class="hero-banner">
-      <img src="images/beans.jpeg" alt="Grant and Sydney">
-    </header>
+  <main>
+    <section id="home" class="hero-section">
+      <div class="hero-overlay"></div>
 
-    <section class="photo-text-section">
-      <img src="images/grant-sydney.jpeg" alt="Grant and Sydney">
-      <div class="photo-overlay">
-        <h1>Grant & Sydney</h1>
-        <p>We can’t wait to celebrate with you.</p>
+      <div class="hero-content">
+        <p class="eyebrow">We’re Getting Married!</p>
+        <h1>Sydney & Grant</h1>
+        <p class="date">08 . 02 . 25</p>
+        <p class="location">Ruckersville, VA</p>
       </div>
     </section>
 
-    <footer class="site-footer">
-      <h2>Contact</h2>
-      <p>Email: grant@grantandsydney.com</p>
-      <p>Venue Name<br>Swift Run Farm<br>Ruckersville, VA 22968</p>
+    <section id="story" class="content-section light-section">
+      <div class="section-inner two-column">
+        <div>
+          <h2>Our Story</h2>
+          <p>
+            Add your story here. This can be a few paragraphs about how you met,
+            your favorite memories together, the proposal, and what you are most
+            excited for as you celebrate with family and friends.
+          </p>
+        </div>
 
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3135.1903330374103!2d-78.44860598865223!3d38.205477587116164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b470f5ce64c105%3A0x2ffef94f368a5691!2s6152%20Mannahoc%20Way%2C%20Ruckersville%2C%20VA%2022968!5e0!3m2!1sen!2sus!4v1781963313298!5m2!1sen!2sus"
-        width="600"
-        height="450"
-        style="border:0;"
-        allowfullscreen=""
-        loading="lazy">
-      </iframe>
-    </footer>
+        <img src="images/grant-sydney.jpg" alt="Sydney and Grant" class="section-photo" />
+      </div>
+    </section>
+
+    <section id="schedule" class="content-section blue-section">
+      <div class="section-inner">
+        <h2>Schedule</h2>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Ceremony</h3>
+            <p>Saturday, August 2, 2025</p>
+            <p>4:00 PM</p>
+          </article>
+
+          <article class="card">
+            <h3>Cocktail Hour</h3>
+            <p>Immediately following ceremony</p>
+            <p>Location details here</p>
+          </article>
+
+          <article class="card">
+            <h3>Reception</h3>
+            <p>Dinner, drinks, and dancing</p>
+            <p>6:00 PM</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="travel" class="content-section light-section">
+      <div class="section-inner">
+        <h2>Travel & Stay</h2>
+        <p>
+          Add hotel block information, nearby lodging, transportation details,
+          parking notes, and airport recommendations here.
+        </p>
+      </div>
+    </section>
+
+    <section id="things" class="content-section maroon-section">
+      <div class="section-inner">
+        <h2>Things To Do</h2>
+
+        <div class="cards">
+          <article class="card dark-card">
+            <h3>Restaurants</h3>
+            <p>Add favorite local restaurants or coffee shops.</p>
+          </article>
+
+          <article class="card dark-card">
+            <h3>Outdoors</h3>
+            <p>Add lakes, trails, parks, or activities nearby.</p>
+          </article>
+
+          <article class="card dark-card">
+            <h3>Local Favorites</h3>
+            <p>Add any favorite spots guests may enjoy.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="registry" class="content-section light-section">
+      <div class="section-inner">
+        <h2>Registry</h2>
+        <p>
+          Your presence is the greatest gift. Registry details can be added here.
+        </p>
+
+        <a href="YOUR_REGISTRY_LINK_HERE" target="_blank" class="secondary-button">
+          View Registry
+        </a>
+      </div>
+    </section>
+
+    <section id="qa" class="content-section blue-section">
+      <div class="section-inner">
+        <h2>Q&A</h2>
+
+        <div class="faq-item">
+          <h3>What should I wear?</h3>
+          <p>Add dress code details here.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I bring a guest?</h3>
+          <p>Add guest policy details here.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Are children invited?</h3>
+          <p>Add child policy details here.</p>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <h2>Location</h2>
+        <p>
+          Swift Run Farm<br />
+          6152 Mannahoc Way<br />
+          Ruckersville, VA 22968
+        </p>
+
+        <h3>Contact</h3>
+        <p>
+          Email: grant@grantandsydney.com<br />
+          Phone: (865)-202-2913
+        </p>
+      </div>
+
+      <div class="map-wrapper">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3135.1903330374103!2d-78.44860598865223!3d38.205477587116164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b470f5ce64c105%3A0x2ffef94f368a5691!2s6152%20Mannahoc%20Way%2C%20Ruckersville%2C%20VA%2022968!5e0!3m2!1sen!2sus!4v1781963313298!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">"
+          width="100%"
+          height="300"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>
