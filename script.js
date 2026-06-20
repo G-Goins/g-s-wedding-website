@@ -1,10 +1,38 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  onSnapshot,
+  setDoc,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 const weddingDate = new Date("2027-05-01T16:00:00");
-const desktopHeader = document.getElementById("desktopHeader");
 const countdownDays = document.getElementById("countdownDays");
 const toast = document.getElementById("toast");
 const addCalendarButton = document.getElementById("addCalendarButton");
 const copyAddressButton = document.getElementById("copyAddressButton");
 const venueAddress = document.getElementById("venueAddress");
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBD-XcsLnfE_hWwU8Xcft8m-_A4pcVidSg",
+  authDomain: "wedding-website-905e0.firebaseapp.com",
+  projectId: "wedding-website-905e0",
+  storageBucket: "wedding-website-905e0.firebasestorage.app",
+  messagingSenderId: "861257187929",
+  appId: "1:861257187929:web:6da5e65e426f19fcfae748"
+};
+
+const firebaseConfigured = Object.values(firebaseConfig).every((value) => {
+  return value && !String(value).startsWith("YOUR_");
+});
+
+let db = null;
+
+if (firebaseConfigured) {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+}
 
 function showToast(message) {
   if (!toast) return;
@@ -17,16 +45,6 @@ function showToast(message) {
   }, 2600);
 }
 
-function updateHeader() {
-  if (!desktopHeader) return;
-
-  if (window.scrollY > 60) {
-    desktopHeader.classList.add("scrolled");
-  } else {
-    desktopHeader.classList.remove("scrolled");
-  }
-}
-
 function updateCountdown() {
   if (!countdownDays) return;
 
@@ -37,38 +55,76 @@ function updateCountdown() {
   countdownDays.textContent = days.toLocaleString();
 }
 
-function initializeLikes() {
+function getLikeStorageKey(postId) {
+  return `sg-liked-${postId}`;
+}
+
+function setLikeButtonState(button, liked) {
+  const heart = button.querySelector(".heart");
+
+  button.classList.toggle("liked", liked);
+  button.setAttribute("aria-pressed", String(liked));
+
+  if (heart) {
+    heart.textContent = liked ? "♥" : "♡";
+  }
+}
+
+function initializeRealLikes() {
   const likeButtons = document.querySelectorAll(".like-button");
 
   likeButtons.forEach((button) => {
-    const likeId = button.dataset.likeId;
-    const storageKey = `liked-${likeId}`;
+    const postId = button.dataset.postId;
+    const countEl = document.querySelector(`[data-like-count-for="${postId}"]`);
 
-    if (localStorage.getItem(storageKey) === "true") {
-      button.classList.add("liked");
-      button.textContent = "♥";
+    const alreadyLiked = localStorage.getItem(getLikeStorageKey(postId)) === "true";
+    setLikeButtonState(button, alreadyLiked);
+
+    if (db) {
+      const likeDoc = doc(db, "postLikes", postId);
+
+      onSnapshot(likeDoc, (snapshot) => {
+        const count = snapshot.exists() ? snapshot.data().count || 0 : 0;
+
+        if (countEl) {
+          countEl.textContent = count.toLocaleString();
+        }
+      });
+    } else if (countEl) {
+      countEl.textContent = "0";
     }
 
-    button.addEventListener("click", () => {
-      const isLiked = button.classList.toggle("liked");
+    button.addEventListener("click", async () => {
+      const wasLiked = localStorage.getItem(getLikeStorageKey(postId)) === "true";
+      const isNowLiked = !wasLiked;
+      const delta = isNowLiked ? 1 : -1;
 
-      button.textContent = isLiked ? "♥" : "♡";
-      localStorage.setItem(storageKey, String(isLiked));
+      setLikeButtonState(button, isNowLiked);
+      localStorage.setItem(getLikeStorageKey(postId), String(isNowLiked));
 
-      showToast(isLiked ? "Added to your favorites" : "Removed from favorites");
-    });
-  });
-}
+      if (!db) {
+        showToast("Firebase is not configured yet, so this like is only saved on this device.");
+        return;
+      }
 
-function initializeCommentJumps() {
-  const commentButtons = document.querySelectorAll(".comment-jump");
+      button.disabled = true;
 
-  commentButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = document.querySelector(button.dataset.target);
+      try {
+        await setDoc(
+          doc(db, "postLikes", postId),
+          { count: increment(delta) },
+          { merge: true }
+        );
 
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
+        showToast(isNowLiked ? "Liked" : "Like removed");
+      } catch (error) {
+        setLikeButtonState(button, wasLiked);
+        localStorage.setItem(getLikeStorageKey(postId), String(wasLiked));
+
+        showToast("Could not save like. Check Firebase rules/config.");
+        console.error(error);
+      } finally {
+        button.disabled = false;
       }
     });
   });
@@ -87,7 +143,7 @@ function initializeShareButtons() {
           await navigator.share({
             title: "Sydney & Grant",
             text: shareText,
-            url: shareUrl,
+            url: shareUrl
           });
         } catch {
           return;
@@ -104,7 +160,7 @@ function initializeShareButtons() {
 
 function downloadCalendarFile() {
   const title = "Sydney and Grant Wedding";
-  const location = "Ruckersville, VA";
+  const location = "6152 Mannahoc Way, Ruckersville, VA 22968";
   const description = "Wedding celebration for Sydney and Grant.";
   const start = "20270501T160000";
   const end = "20270501T230000";
@@ -122,7 +178,7 @@ function downloadCalendarFile() {
     `LOCATION:${location}`,
     `DESCRIPTION:${description}`,
     "END:VEVENT",
-    "END:VCALENDAR",
+    "END:VCALENDAR"
   ].join("\r\n");
 
   const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
@@ -152,12 +208,9 @@ async function copyAddress() {
   }
 }
 
-window.addEventListener("scroll", updateHeader);
 window.addEventListener("load", () => {
-  updateHeader();
   updateCountdown();
-  initializeLikes();
-  initializeCommentJumps();
+  initializeRealLikes();
   initializeShareButtons();
 });
 
