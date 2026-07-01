@@ -703,24 +703,28 @@ img {
   color: var(--muted);
 }
 
+.party-intro {
+  padding: 0 18px 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .party-grid {
   display: grid;
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
   padding: 0 18px 22px;
 }
 
 .party-card {
-  display: grid;
-  grid-template-columns: 118px 1fr;
   overflow: hidden;
-  align-items: center;
   border-radius: var(--radius-md);
   background: rgba(216, 237, 244, 0.58);
 }
 
 .party-card img {
-  width: 118px;
-  height: 118px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
 }
 
@@ -732,16 +736,30 @@ img {
   margin: 0 0 4px;
   color: var(--maroon);
   font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .party-card h4 {
   margin: 0;
   font-family: "Cormorant Garamond", serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
+  line-height: 1;
 }
 
 .party-card span {
+  display: block;
+  margin-top: 8px;
   color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 540px) {
+  .party-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .travel-content,
