@@ -1,10 +1,12 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { db, firebaseConfigured } from "./firebase-config.js";
 import {
-  getFirestore,
+  collection,
   doc,
+  increment,
   onSnapshot,
-  setDoc,
-  increment
+  orderBy,
+  query,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const weddingDate = new Date("2027-05-01T16:00:00");
@@ -13,26 +15,9 @@ const toast = document.getElementById("toast");
 const addCalendarButton = document.getElementById("addCalendarButton");
 const copyAddressButton = document.getElementById("copyAddressButton");
 const venueAddress = document.getElementById("venueAddress");
+const dynamicPosts = document.getElementById("dynamicPosts");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBD-XcsLnfE_hWwU8Xcft8m-_A4pcVidSg",
-  authDomain: "wedding-website-905e0.firebaseapp.com",
-  projectId: "wedding-website-905e0",
-  storageBucket: "wedding-website-905e0.firebasestorage.app",
-  messagingSenderId: "861257187929",
-  appId: "1:861257187929:web:6da5e65e426f19fcfae748"
-};
-
-const firebaseConfigured = Object.values(firebaseConfig).every((value) => {
-  return value && !String(value).startsWith("YOUR_");
-});
-
-let db = null;
-
-if (firebaseConfigured) {
-  const app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-}
+const likeListeners = new Set();
 
 function showToast(message) {
   if (!toast) return;
@@ -43,6 +28,15 @@ function showToast(message) {
   window.setTimeout(() => {
     toast.classList.remove("show");
   }, 2600);
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function updateCountdown() {
@@ -70,8 +64,8 @@ function setLikeButtonState(button, liked) {
   }
 }
 
-function initializeRealLikes() {
-  const likeButtons = document.querySelectorAll(".like-button");
+function initializeLikeButtons(scope = document) {
+  const likeButtons = scope.querySelectorAll(".like-button");
 
   likeButtons.forEach((button) => {
     const postId = button.dataset.postId;
@@ -80,19 +74,23 @@ function initializeRealLikes() {
     const alreadyLiked = localStorage.getItem(getLikeStorageKey(postId)) === "true";
     setLikeButtonState(button, alreadyLiked);
 
-    if (db) {
-      const likeDoc = doc(db, "postLikes", postId);
+    if (db && !likeListeners.has(postId)) {
+      likeListeners.add(postId);
 
-      onSnapshot(likeDoc, (snapshot) => {
+      onSnapshot(doc(db, "postLikes", postId), (snapshot) => {
         const count = snapshot.exists() ? snapshot.data().count || 0 : 0;
+        const allCountEls = document.querySelectorAll(`[data-like-count-for="${postId}"]`);
 
-        if (countEl) {
-          countEl.textContent = count.toLocaleString();
-        }
+        allCountEls.forEach((element) => {
+          element.textContent = count.toLocaleString();
+        });
       });
-    } else if (countEl) {
+    } else if (!db && countEl) {
       countEl.textContent = "0";
     }
+
+    if (button.dataset.initialized === "true") return;
+    button.dataset.initialized = "true";
 
     button.addEventListener("click", async () => {
       const wasLiked = localStorage.getItem(getLikeStorageKey(postId)) === "true";
@@ -103,7 +101,7 @@ function initializeRealLikes() {
       localStorage.setItem(getLikeStorageKey(postId), String(isNowLiked));
 
       if (!db) {
-        showToast("Firebase is not configured yet, so this like is only saved on this device.");
+        showToast("Firebase is not configured yet. Like saved only on this device.");
         return;
       }
 
@@ -121,8 +119,8 @@ function initializeRealLikes() {
         setLikeButtonState(button, wasLiked);
         localStorage.setItem(getLikeStorageKey(postId), String(wasLiked));
 
-        showToast("Could not save like. Check Firebase rules/config.");
         console.error(error);
+        showToast("Could not save like.");
       } finally {
         button.disabled = false;
       }
@@ -130,10 +128,80 @@ function initializeRealLikes() {
   });
 }
 
-function initializeShareButtons() {
-  const shareButtons = document.querySelectorAll(".share-button");
+function renderDynamicPost(postId, post) {
+  const title = escapeHtml(post.title);
+  const caption = escapeHtml(post.caption);
+  const imageUrl = escapeHtml(post.imageUrl);
+  const author = escapeHtml(post.author || "@sydneyandgrant");
+
+  return `
+    <article class="post-card">
+      <div class="post-header">
+        <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
+        <div>
+          <h3>${author}</h3>
+          <p>${title}</p>
+        </div>
+        <span class="dots">•••</span>
+      </div>
+
+      ${imageUrl ? `<img src="${imageUrl}" alt="" class="dynamic-post-image" />` : ""}
+
+      <div class="post-actions">
+        <button type="button" class="like-button" data-post-id="${postId}" aria-pressed="false">
+          <span class="heart">♡</span>
+          <span class="like-count" data-like-count-for="${postId}">0</span>
+        </button>
+
+        <button
+          type="button"
+          class="share-button"
+          data-share-text="${title}"
+        >
+          Share
+        </button>
+      </div>
+
+      <p class="caption">
+        <strong>${author}</strong>
+        ${caption}
+      </p>
+    </article>
+  `;
+}
+
+function loadDynamicPosts() {
+  if (!dynamicPosts) return;
+
+  if (!firebaseConfigured || !db) {
+    dynamicPosts.innerHTML = "";
+    return;
+  }
+
+  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+
+  onSnapshot(postsQuery, (snapshot) => {
+    if (snapshot.empty) {
+      dynamicPosts.innerHTML = "";
+      return;
+    }
+
+    dynamicPosts.innerHTML = snapshot.docs
+      .map((postDoc) => renderDynamicPost(postDoc.id, postDoc.data()))
+      .join("");
+
+    initializeLikeButtons(dynamicPosts);
+    initializeShareButtons(dynamicPosts);
+  });
+}
+
+function initializeShareButtons(scope = document) {
+  const shareButtons = scope.querySelectorAll(".share-button");
 
   shareButtons.forEach((button) => {
+    if (button.dataset.initialized === "true") return;
+    button.dataset.initialized = "true";
+
     button.addEventListener("click", async () => {
       const shareText = button.dataset.shareText || "Sydney and Grant are getting married!";
       const shareUrl = window.location.href;
@@ -204,14 +272,15 @@ async function copyAddress() {
     await navigator.clipboard.writeText(addressText);
     showToast("Address copied");
   } else {
-    showToast("Copy the address from the footer");
+    showToast("Copy the address from the footer.");
   }
 }
 
 window.addEventListener("load", () => {
   updateCountdown();
-  initializeRealLikes();
+  initializeLikeButtons();
   initializeShareButtons();
+  loadDynamicPosts();
 });
 
 if (addCalendarButton) {

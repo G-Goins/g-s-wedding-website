@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>RSVP | Sydney & Grant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="rsvp-page">
+    <a href="index.html" class="back-link">← Back to site</a>
+
+    <section class="rsvp-shell">
+      <div class="rsvp-intro">
+        <p class="kicker dark">Sydney & Grant</p>
+        <h1>RSVP</h1>
+        <p>
+          Start by typing your full name. If your household is on the guest list,
+          we will pull up your RSVP card.
+        </p>
+      </div>
+
+      <form id="lookupForm" class="lookup-form">
+        <label for="guestName">Your full name</label>
+        <div class="lookup-row">
+          <input id="guestName" type="text" autocomplete="name" placeholder="Jane Smith" required />
+          <button type="submit">Find Invite</button>
+        </div>
+      </form>
+
+      <div id="lookupMessage" class="form-message"></div>
+
+      <section id="inviteSection" class="invite-section hidden">
+        <div class="invite-card">
+          <p class="kicker dark">Invitation found</p>
+          <h2 id="householdName"></h2>
+          <p id="inviteHelp"></p>
+
+          <form id="rsvpForm" class="rsvp-form">
+            <fieldset>
+              <legend>Will you attend?</legend>
+
+              <label class="radio-row">
+                <input type="radio" name="attending" value="yes" required />
+                <span>Joyfully accepts</span>
+              </label>
+
+              <label class="radio-row">
+                <input type="radio" name="attending" value="no" required />
+                <span>Regretfully declines</span>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Who is attending?</legend>
+              <div id="guestCheckboxes"></div>
+              <div id="extraGuestFields"></div>
+            </fieldset>
+
+            <label>
+              Mailing address
+              <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
+            </label>
+
+            <label>
+              Dietary notes
+              <textarea id="dietaryNotes" rows="3" placeholder="Allergies, restrictions, etc."></textarea>
+            </label>
+
+            <label>
+              Song request
+              <input id="songRequest" type="text" placeholder="Give us a dance floor request" />
+            </label>
+
+            <label>
+              Message
+              <textarea id="message" rows="3" placeholder="Optional note"></textarea>
+            </label>
+
+            <button type="submit" class="primary-button rsvp-submit-button">Submit RSVP</button>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="rsvp.js"></script>
+</body>
+</html>

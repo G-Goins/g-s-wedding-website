@@ -61,9 +61,8 @@ img {
   max-width: 100%;
 }
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
+.hidden {
+  display: none !important;
 }
 
 .topbar {
@@ -87,7 +86,7 @@ a {
   color: var(--white);
   border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: var(--radius-pill);
-  background: rgba(59, 31, 45, 0.32);
+  background: rgba(59, 31, 45, 0.34);
   backdrop-filter: blur(18px);
   box-shadow: 0 18px 45px rgba(59, 31, 45, 0.18);
   pointer-events: auto;
@@ -130,7 +129,9 @@ a {
 .footer-button,
 .profile-buttons a,
 .profile-buttons button,
-.quick-actions a {
+.quick-actions a,
+.lookup-row button,
+.secondary-admin-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -159,7 +160,8 @@ a {
 .footer-button:hover,
 .profile-buttons a:hover,
 .profile-buttons button:hover,
-.quick-actions a:hover {
+.quick-actions a:hover,
+.lookup-row button:hover {
   transform: translateY(-2px);
 }
 
@@ -388,7 +390,9 @@ a {
   place-items: center;
   width: 70px;
   height: 70px;
-  font-size: 1.55rem;
+  color: var(--plum);
+  font-weight: 900;
+  font-size: 0.82rem;
   border-radius: 50%;
   background:
     linear-gradient(var(--cream), var(--cream)) padding-box,
@@ -579,19 +583,18 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-width: 42px;
   min-height: 38px;
   cursor: pointer;
   border: 0;
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 1.35rem;
+  font-weight: 800;
   text-decoration: none;
 }
 
-.like-button {
-  font-weight: 800;
+.heart {
+  font-size: 1.35rem;
 }
 
 .like-count {
@@ -611,6 +614,13 @@ a {
   padding: 0 18px 20px;
   margin: 8px 0 0;
   line-height: 1.7;
+}
+
+.dynamic-post-image,
+.post-photo {
+  width: 100%;
+  max-height: 650px;
+  object-fit: cover;
 }
 
 .details-grid {
@@ -658,12 +668,6 @@ a {
 .mini-button.pale {
   color: var(--ink);
   background: var(--blue-100);
-}
-
-.post-photo {
-  width: 100%;
-  max-height: 650px;
-  object-fit: cover;
 }
 
 .schedule-list {
@@ -889,6 +893,179 @@ a {
   opacity: 1;
 }
 
+.rsvp-page,
+.admin-page {
+  min-height: 100vh;
+  padding: 38px 20px 80px;
+}
+
+.back-link {
+  display: inline-flex;
+  margin: 0 0 28px;
+  color: var(--maroon);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.rsvp-shell,
+.admin-shell {
+  width: min(100%, 860px);
+  margin: 0 auto;
+}
+
+.rsvp-intro,
+.admin-heading {
+  margin-bottom: 24px;
+  padding: 34px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 248, 242, 0.82);
+  box-shadow: var(--soft-shadow);
+  text-align: center;
+}
+
+.rsvp-intro h1,
+.admin-heading h1 {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(4rem, 10vw, 7rem);
+  line-height: 0.9;
+}
+
+.lookup-form,
+.invite-card,
+.admin-card {
+  margin-bottom: 24px;
+  padding: 26px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--soft-shadow);
+}
+
+.lookup-form label,
+.rsvp-form label,
+.admin-card label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 900;
+}
+
+.lookup-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px 14px;
+  color: var(--ink);
+  background: rgba(255, 248, 242, 0.84);
+  font: inherit;
+}
+
+.lookup-row button {
+  padding: 0 20px;
+  color: var(--white);
+  background: var(--maroon);
+}
+
+.form-message {
+  margin-bottom: 18px;
+  color: var(--maroon);
+  font-weight: 900;
+}
+
+.invite-card h2,
+.admin-card h2 {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.rsvp-form fieldset {
+  margin: 22px 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.rsvp-form legend {
+  padding: 0 8px;
+  font-weight: 900;
+}
+
+.radio-row,
+.checkbox-row {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center;
+  gap: 10px !important;
+  margin: 12px 0 !important;
+  font-weight: 700 !important;
+}
+
+.radio-row input,
+.checkbox-row input {
+  width: auto;
+}
+
+.rsvp-submit-button {
+  width: 100%;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.secondary-admin-button {
+  padding: 10px 16px;
+  color: var(--ink);
+  background: var(--blue-100);
+}
+
+.admin-card pre {
+  overflow-x: auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(216, 237, 244, 0.75);
+}
+
+.admin-note {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.rsvp-results,
+#adminPosts {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.result-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(216, 237, 244, 0.62);
+}
+
+.result-card h3 {
+  margin: 0 0 8px;
+}
+
+.result-card p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
 @media (max-width: 1120px) {
   .content-grid {
     grid-template-columns: minmax(0, 680px);
@@ -970,6 +1147,14 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .lookup-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lookup-row button {
+    padding: 14px 18px;
+  }
+
   .mobile-nav {
     position: fixed;
     z-index: 130;
@@ -1031,7 +1216,6 @@ a {
   .highlight span {
     width: 58px;
     height: 58px;
-    font-size: 1.25rem;
   }
 
   .announcement-image {

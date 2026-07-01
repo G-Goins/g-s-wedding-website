@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Wedding Admin | Sydney & Grant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="admin-page">
+    <a href="index.html" class="back-link">← Back to site</a>
+
+    <section class="admin-shell">
+      <div class="admin-heading">
+        <p class="kicker dark">Private</p>
+        <h1>Wedding Admin</h1>
+        <p>Create posts, seed your guest list, and review RSVPs.</p>
+      </div>
+
+      <form id="loginForm" class="admin-card">
+        <h2>Sign in</h2>
+
+        <label>
+          Email
+          <input id="adminEmail" type="email" value="grantorsydney@grantandsydney.com" required />
+        </label>
+
+        <label>
+          Password
+          <input id="adminPassword" type="password" required />
+        </label>
+
+        <button type="submit" class="primary-button">Sign In</button>
+      </form>
+
+      <section id="adminPanel" class="hidden">
+        <div class="admin-actions">
+          <p id="adminStatus"></p>
+          <button id="signOutButton" type="button" class="secondary-admin-button">Sign Out</button>
+        </div>
+
+        <form id="postForm" class="admin-card">
+          <h2>Create Feed Post</h2>
+
+          <label>
+            Post title
+            <input id="postTitle" type="text" placeholder="Hotel block is live" required />
+          </label>
+
+          <label>
+            Caption
+            <textarea id="postCaption" rows="5" placeholder="Write the update..." required></textarea>
+          </label>
+
+          <label>
+            Optional image URL
+            <input id="postImageUrl" type="url" placeholder="https://..." />
+          </label>
+
+          <label>
+            Optional image upload
+            <input id="postImageFile" type="file" accept="image/*" />
+          </label>
+
+          <button type="submit" class="primary-button">Publish Post</button>
+        </form>
+
+        <section class="admin-card">
+        <h2>Import Guest List</h2>
+
+        <p>
+            Upload a CSV exported from Google Sheets. Required columns:
+        </p>
+
+        <pre>householdName,firstName,lastName,maxAttendees</pre>
+
+        <label>
+            Guest CSV
+            <input id="guestCsvFile" type="file" accept=".csv,text/csv" />
+        </label>
+
+        <button id="importGuestCsvButton" type="button" class="primary-button">
+            Import Guest CSV
+        </button>
+
+        <p class="admin-note">
+            Each row should be one guest. Rows with the same householdName will be grouped into one invite.
+            If a household has an unnamed plus-one, increase maxAttendees above the number of named guests.
+        </p>
+        </section>
+
+        <section class="admin-card">
+          <h2>RSVPs</h2>
+          <button id="loadRsvpsButton" type="button" class="primary-button">Load RSVPs</button>
+          <div id="rsvpResults" class="rsvp-results"></div>
+        </section>
+
+        <section class="admin-card">
+          <h2>Recent Posts</h2>
+          <div id="adminPosts"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
