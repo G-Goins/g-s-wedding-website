@@ -50,29 +50,53 @@
         </div>
 
         <form id="postForm" class="admin-card">
-            <h2>Create Feed Post</h2>
+        <h2>Create Feed Post</h2>
 
-            <label>
+        <label>
             Post title
             <input id="postTitle" type="text" placeholder="Hotel block is live" required />
-            </label>
+        </label>
 
-            <label>
+        <label>
             Caption
             <textarea id="postCaption" rows="5" placeholder="Write the update..." required></textarea>
-            </label>
+        </label>
 
-            <label>
+        <label>
             Optional image URL
             <input id="postImageUrl" type="text" placeholder="images/photo-name.jpeg or https://..." />
-            </label>
+        </label>
 
-            <button type="submit" class="primary-button">Publish Post</button>
+        <button type="submit" class="primary-button">Publish Post</button>
         </form>
 
         <section class="admin-card">
-            <h2>Recent Posts</h2>
-            <div id="adminPosts"></div>
+        <h2>Import Guest List</h2>
+
+        <p>
+            Upload a CSV exported from Google Sheets. Required columns:
+        </p>
+
+        <pre>householdName,firstName,lastName,maxAttendees</pre>
+
+        <label>
+            Guest CSV
+            <input id="guestCsvFile" type="file" accept=".csv,text/csv" />
+        </label>
+
+        <button id="importGuestCsvButton" type="button" class="primary-button">
+            Import Guest CSV
+        </button>
+
+        <p class="admin-note">
+            Each row should be one guest. Rows with the same householdName will be grouped into one invite.
+            Do not upload this CSV to GitHub.
+        </p>
+        </section>
+
+        <section class="admin-card">
+        <h2>Recent Posts</h2>
+        <div id="adminPosts"></div>
         </section>
         </section>
     </section>

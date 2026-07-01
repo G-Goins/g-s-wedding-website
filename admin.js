@@ -12,7 +12,8 @@ import {
   orderBy,
   query,
   serverTimestamp,
-  setDoc
+  setDoc,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const loginForm = document.getElementById("loginForm");
@@ -28,6 +29,9 @@ const postTitle = document.getElementById("postTitle");
 const postCaption = document.getElementById("postCaption");
 const postImageUrl = document.getElementById("postImageUrl");
 const adminPosts = document.getElementById("adminPosts");
+
+const guestCsvFile = document.getElementById("guestCsvFile");
+const importGuestCsvButton = document.getElementById("importGuestCsvButton");
 
 const toast = document.getElementById("toast");
 
@@ -60,6 +64,188 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function normalizeName(name) {
+  return String(name || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function generateInviteId() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let result = "";
+
+  for (let i = 0; i < 12; i += 1) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  return result;
+}
+
+function parseCsvLine(line) {
+  const result = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+
+    if (char === '"' && insideQuotes && nextChar === '"') {
+      current += '"';
+      i += 1;
+      continue;
+    }
+
+    if (char === '"') {
+      insideQuotes = !insideQuotes;
+      continue;
+    }
+
+    if (char === "," && !insideQuotes) {
+      result.push(current.trim());
+      current = "";
+      continue;
+    }
+
+    current += char;
+  }
+
+  result.push(current.trim());
+  return result;
+}
+
+function parseCsv(text) {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length < 2) {
+    throw new Error("CSV must include a header row and at least one guest row.");
+  }
+
+  const headers = parseCsvLine(lines[0]).map((header) =>
+    header.trim().toLowerCase()
+  );
+
+  return lines.slice(1).map((line) => {
+    const values = parseCsvLine(line);
+    const row = {};
+
+    headers.forEach((header, index) => {
+      row[header] = values[index] || "";
+    });
+
+    return row;
+  });
+}
+
+function buildHouseholdsFromCsvRows(rows) {
+  const households = new Map();
+
+  rows.forEach((row) => {
+    const householdName = row.householdname?.trim();
+    const firstName = row.firstname?.trim();
+    const lastName = row.lastname?.trim();
+    const maxAttendeesRaw = row.maxattendees?.trim();
+
+    if (!firstName || !lastName) {
+      throw new Error("Each row must include firstName and lastName.");
+    }
+
+    const fullName = `${firstName} ${lastName}`.trim();
+    const resolvedHouseholdName = householdName || fullName;
+
+    if (!households.has(resolvedHouseholdName)) {
+      households.set(resolvedHouseholdName, {
+        householdName: resolvedHouseholdName,
+        guestNames: [],
+        maxAttendees: 0
+      });
+    }
+
+    const household = households.get(resolvedHouseholdName);
+
+    household.guestNames.push(fullName);
+
+    const parsedMax = Number(maxAttendeesRaw);
+
+    if (Number.isFinite(parsedMax) && parsedMax > household.maxAttendees) {
+      household.maxAttendees = parsedMax;
+    }
+  });
+
+  return Array.from(households.values()).map((household) => ({
+    ...household,
+    maxAttendees: household.maxAttendees || household.guestNames.length
+  }));
+}
+
+async function importGuestCsv() {
+  if (!guestCsvFile) {
+    throw new Error("Guest CSV input is missing from admin.html.");
+  }
+
+  const file = guestCsvFile.files?.[0];
+
+  if (!file) {
+    throw new Error("Choose a CSV file first.");
+  }
+
+  if (!db) {
+    throw new Error("Firebase database is not configured.");
+  }
+
+  const csvText = await file.text();
+  const rows = parseCsv(csvText);
+  const households = buildHouseholdsFromCsvRows(rows);
+
+  if (households.length === 0) {
+    throw new Error("No households found in CSV.");
+  }
+
+  const batch = writeBatch(db);
+
+  households.forEach((household) => {
+    const inviteId = generateInviteId();
+
+    batch.set(doc(db, "invites", inviteId), {
+      householdName: household.householdName,
+      guestNames: household.guestNames,
+      maxAttendees: household.maxAttendees,
+      createdAt: serverTimestamp(),
+      rsvp: {
+        submitted: false,
+        attending: false,
+        attendeeNames: [],
+        dietaryNotes: "",
+        songRequest: "",
+        mailingAddress: "",
+        message: ""
+      }
+    });
+
+    household.guestNames.forEach((guestName) => {
+      const lookupId = normalizeName(guestName);
+
+      batch.set(doc(db, "guestLookups", lookupId), {
+        inviteId,
+        householdName: household.householdName,
+        matchedName: guestName
+      });
+    });
+  });
+
+  await batch.commit();
+
+  guestCsvFile.value = "";
+  showToast(`Imported ${households.length} household${households.length === 1 ? "" : "s"}.`);
 }
 
 async function createPost(event) {
@@ -202,6 +388,17 @@ if (signOutButton) {
 
 if (postForm) {
   postForm.addEventListener("submit", createPost);
+}
+
+if (importGuestCsvButton) {
+  importGuestCsvButton.addEventListener("click", async () => {
+    try {
+      await importGuestCsv();
+    } catch (error) {
+      console.error(error);
+      showToast(error.message || "Could not import guest CSV.");
+    }
+  });
 }
 
 if (firebaseConfigured && auth) {
