@@ -6,23 +6,13 @@
 
   <title>Sydney & Grant | 05.01.2027</title>
 
-  <meta
-  name="description"
-  content="Celebrate our wedding on May 1, 2027 in Ruckersville!"
-/>
-
+  <meta name="description" content="Celebrate Sydney and Grant's wedding on May 1, 2027 in Ruckersville, Virginia." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Sydney & Grant" />
   <meta property="og:title" content="Sydney & Grant | 05.01.2027" />
-  <meta
-    property="og:description"
-    content="Come celebrate with us on May 1, 2027 in Ruckersville, Virginia."
-  />
+  <meta property="og:description" content="Come celebrate with us on May 1, 2027 in Ruckersville, Virginia." />
   <meta property="og:url" content="https://grantandsydney.com/" />
-  <meta
-    property="og:image"
-    content="https://grantandsydney.com/images/grant-sydney2.jpeg"
-  />
+  <meta property="og:image" content="https://grantandsydney.com/images/grant-sydney2.jpeg" />
   <meta property="og:image:secure_url" content="https://grantandsydney.com/images/grant-sydney2.jpeg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1200" />
@@ -31,23 +21,12 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Sydney & Grant | 05.01.2027" />
-  <meta
-    name="twitter:description"
-    content="Come celebrate with us on May 1, 2027 in Ruckersville, Virginia."
-  />
-  <meta
-    name="twitter:image"
-    content="https://grantandsydney.com/images/grant-sydney2.jpeg"
-  />
+  <meta name="twitter:description" content="Come celebrate with us on May 1, 2027 in Ruckersville, Virginia." />
+  <meta name="twitter:image" content="https://grantandsydney.com/images/grant-sydney2.jpeg" />
 
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -55,394 +34,216 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a href="#home" class="wordmark">S + G</a>
-
       <nav class="desktop-nav" aria-label="Main navigation">
         <a href="#feed">Updates</a>
         <a href="#details">Details</a>
         <a href="#schedule">Schedule</a>
-        <a href="#party">People</a>
         <a href="#travel">Travel</a>
-        <a href="#qa">Q&A</a>
+        <a href="#party">People</a>
+        <a href="#qa">Q&amp;A</a>
       </nav>
-
-      <a class="topbar-button" href="rsvp.html">RSVP</a>
     </div>
   </header>
 
   <main id="home" class="page-shell">
-    <section class="hero-card">
+    <section class="hero-card" aria-labelledby="heroTitle">
+      <img class="hero-photo" src="images/header-photo.jpeg" alt="Sydney and Grant" />
+      <div class="hero-shade"></div>
       <div class="hero-content">
         <p class="kicker">Come celebrate with us</p>
-        <h1>Sydney & Grant</h1>
+        <h1 id="heroTitle">Sydney &amp; Grant</h1>
         <p class="hero-date">May 1, 2027</p>
         <p class="hero-location">Ruckersville, Virginia</p>
-
-        <div class="hero-actions">
-          <a class="primary-button" href="rsvp.html">RSVP</a>
-          <a class="secondary-button" href="https://www.postable.com/Goins2bmarried">Send us your address!</a>
-        </div>
       </div>
     </section>
 
-    <section class="profile-panel">
+    <section class="profile-panel" aria-label="Wedding information hub">
       <div class="profile-main">
         <img class="profile-photo" src="images/grant-sydney.jpeg" alt="Sydney and Grant" />
-
         <div class="profile-copy">
           <div class="profile-title-row">
             <h2>@sydneyandgrant</h2>
-            <span class="verified-badge">✓</span>
+            <span class="verified-badge" aria-label="Verified">✓</span>
           </div>
-
           <p class="profile-subtitle">Just two beans in a pod.</p>
-
           <div class="stat-row">
-            <div>
-              <strong>05.01.27</strong>
-              <span>Date</span>
-            </div>
-
-            <div>
-              <strong id="countdownDays">---</strong>
-              <span>Days</span>
-            </div>
-
-            <div>
-              <strong>Virginia</strong>
-              <span>Location</span>
-            </div>
+            <div><strong>05.01.27</strong><span>Date</span></div>
+            <div><strong id="countdownDays">---</strong><span>Days</span></div>
+            <div><strong>Virginia</strong><span>Location</span></div>
           </div>
-
-          <p class="profile-bio">
-            We made this so everything wedding-related has one home and it's a healthier use of your screentime.
-          </p>
-
-          <div class="profile-buttons">
-            <a href="rsvp.html">RSVP</a>
-            <a href="https://www.postable.com/Goins2bmarried">Send us your address!</a>
-            <button type="button" id="addCalendarButton">Add to Calendar</button>
-          </div>
+          <p class="profile-bio">We made this so everything wedding-related has one home and it is a healthier use of your screen time.</p>
         </div>
       </div>
 
-      <nav class="section-pills" aria-label="Site sections">
+      <div class="action-hub" aria-label="Wedding actions">
+        <a href="rsvp.html" class="action-button action-red">RSVP</a>
+        <a href="https://www.postable.com/Goins2bmarried" class="action-button action-orange" target="_blank" rel="noopener">Send us your address</a>
+        <button type="button" id="addCalendarButton" class="action-button action-blue">Add to calendar</button>
+        <a href="#location" class="action-button action-navy">View the map</a>
+      </div>
+
+      <nav class="section-nav" aria-label="Jump to a section">
+        <a href="#feed">Updates</a>
         <a href="#details">Details</a>
         <a href="#schedule">Schedule</a>
         <a href="#travel">Travel</a>
         <a href="#party">People</a>
         <a href="#registry">Registry</a>
-        <a href="#faq">Q&amp;A</a>
-        <a href="#location">Location</a>
+        <a href="#qa">Q&amp;A</a>
       </nav>
+    </section>
 
     <section id="feed" class="content-grid">
-      <aside class="side-card left-side">
-        <p class="kicker dark">Wedding Profile</p>
-        <h2>S + G</h2>
-        <p>
-          Our wedding feed to keep you updated on all things #Goins2BeMarried (Sydney wanted to use this hashtag)
-        </p>
-
-        <div class="mini-info-list">
-          <div>
-            <span>Date</span>
-            <strong>May 1, 2027</strong>
-          </div>
-          <div class="quick-actions left-actions">
-            <a href="rsvp.html">RSVP</a>
-            <a href="#location">View Map</a>
-            <a href="mailto:grantorsydney@grantandsydney.com">Email Us</a>
-          </div>
-
-          <div>
-            <span>Location</span>
-            <strong>Ruckersville, VA</strong>
-          </div>
-
-          <div>
-            <span>Email</span>
-            <strong>grantorsydney@grantandsydney.com</strong>
-          </div>
-        </div>
+      <aside id="details" class="side-card details-card">
+        <p class="eyebrow">The essentials</p>
+        <h2>At a glance</h2>
+        <dl class="fact-list">
+          <div><dt>Dress code</dt><dd>Semi-formal attire</dd></div>
+          <div><dt>RSVP by</dt><dd>February 14, 2027</dd></div>
+          <div><dt>Hotel</dt><dd>Omni Charlottesville Hotel</dd></div>
+          <div><dt>Transportation</dt><dd>Shuttle service between the hotel and venue</dd></div>
+          <div><dt>Questions</dt><dd><a href="mailto:grantorsydney@grantandsydney.com">grantorsydney@grantandsydney.com</a></dd></div>
+        </dl>
       </aside>
 
       <div class="feed-column">
         <div class="section-heading">
-          <p class="kicker dark">From Us</p>
+          <p class="eyebrow">From us</p>
           <h2>Wedding Updates</h2>
         </div>
 
         <article class="post-card">
-          <div class="post-header">
+          <header class="post-header">
             <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
-            <div>
-              <h3>@sydneyandgrant</h3>
-              <p>Pinned</p>
-            </div>
-            <span class="dots">•••</span>
-          </div>
+            <div><h3>@sydneyandgrant</h3><p>Pinned</p></div>
+          </header>
 
-          <div class="announcement-image">
-            <div>
-              <p>We’re gettin' married</p>
-              <h2>05.01.2027</h2>
+          <div class="announcement-media">
+            <img src="images/announcement-photo.jpeg" alt="Sydney and Grant" />
+            <div class="announcement-label">
+              <p>We’re gettin’ married</p>
+              <strong>05.01.2027</strong>
               <span>Ruckersville, Virginia</span>
             </div>
           </div>
 
           <div class="post-actions">
             <button type="button" class="like-button" data-post-id="announcement" aria-pressed="false">
-              <span class="heart">♡</span>
+              <span class="heart" aria-hidden="true">♡</span>
               <span class="like-count" data-like-count-for="announcement">0</span>
+              <span class="sr-only">Like this post</span>
             </button>
-
-            <a href="#qa" class="icon-link">Comment</a>
-
-            <button
-              type="button"
-              class="share-button"
-              data-share-text="Sydney and Grant are getting married on May 1, 2027!"
-            >
-              Share
-            </button>
+            <button type="button" class="share-button" data-share-text="Sydney and Grant are getting married on May 1, 2027!">Share</button>
           </div>
 
-          <p class="caption">
-            <strong>@sydneyandgrant</strong>
-            The start of the news feed. We will be posting updates here as plans are finalized.
-          </p>
+          <p class="caption"><strong>@sydneyandgrant</strong> The start of the news feed. We will post updates here as plans are finalized.</p>
         </article>
 
         <div id="dynamicPosts"></div>
 
-        <article id="details" class="post-card">
-          <div class="post-header">
-            <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
-            <div>
-              <h3>@sydneyandgrant</h3>
-              <p>Start here</p>
-            </div>
-            <span class="dots">•••</span>
-          </div>
-
-          <div class="details-grid">
-            <div class="detail-tile">
-              <span>Date</span>
-              <strong>May 1, 2027</strong>
-            </div>
-
-            <div class="detail-tile">
-              <span>Location</span>
-              <strong>Ruckersville, VA</strong>
-            </div>
-
-            <div class="detail-tile">
-              <span>Dress Code</span>
-              <strong>Semi-Formal Attire</strong>
-            </div>
-
-            <div class="detail-tile">
-              <span>RSVP By</span>
-              <strong>Feburary 14th, 2027</strong>
-            </div>
-          </div>
-
-          <p class="caption">
-            <strong>@sydneyandgrant</strong>
-            Here is some general information about our wedding. More details will be posted here as our plans are finalized!
-          </p>
-
-          <div class="button-row">
-            <a class="mini-button" href="rsvp.html">RSVP</a>
-            <a class="mini-button pale" href="#location">View Location</a>
-          </div>
-        </article>
-
         <article id="schedule" class="post-card">
-          <div class="post-header">
+          <header class="post-header">
             <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
-            <div>
-              <h3>@sydneyandgrant</h3>
-              <p>Weekend plan</p>
-            </div>
-            <span class="dots">•••</span>
-          </div>
-
+            <div><h3>@sydneyandgrant</h3><p>Weekend plan</p></div>
+          </header>
           <div class="schedule-list">
             <div class="schedule-item">
-              <span>4:00 PM</span>
-              <div>
-                <h4>Ceremony</h4>
-                <p>Saturday, May 1, 2027</p>
-              </div>
+              <time datetime="2027-05-01T16:00">4:00 PM</time>
+              <div><h4>Ceremony</h4><p>Saturday, May 1, 2027</p></div>
             </div>
-
             <div class="schedule-item">
-              <span>5:00 PM</span>
-              <div>
-                <h4>Cocktail Hour</h4>
-                <p>Immediately following the ceremony.</p>
-              </div>
+              <time datetime="2027-05-01T17:00">5:00 PM</time>
+              <div><h4>Cocktail Hour</h4><p>Immediately following the ceremony.</p></div>
             </div>
-
             <div class="schedule-item">
-              <span>6:00 PM</span>
-              <div>
-                <h4>Reception</h4>
-                <p>Dinner, drinks, and dancing.</p>
-              </div>
+              <time datetime="2027-05-01T18:00">6:00 PM</time>
+              <div><h4>Reception</h4><p>Dinner, drinks, and dancing.</p></div>
             </div>
           </div>
         </article>
 
         <article id="travel" class="post-card">
-          <div class="post-header">
+          <header class="post-header">
             <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
-            <div>
-              <h3>@sydneyandgrant</h3>
-              <p>Travel & stay</p>
-            </div>
-            <span class="dots">•••</span>
-          </div>
-
-          <div class="travel-content">
-            <p class="kicker dark">For out-of-town guests</p>
+            <div><h3>@sydneyandgrant</h3><p>Travel &amp; stay</p></div>
+          </header>
+          <div class="post-body">
+            <p class="eyebrow">For out-of-town guests</p>
             <h3>Travel Details</h3>
-            <p>
-              Hotel information and transportion details.
-            </p>
-
-            <div class="soft-list">
-              <div><span>Nearest Airport</span><strong>Ronald Reagan (DCA), Dulles International (IAD), Charlottesville Albemaria (CHO)</strong></div>
-              <div><span>Hotel Block</span><strong>Omni Charlottesville Hotel</strong></div>
-              <div><span>Transportation</span><strong>Transportion will be provided via shuttle service from hotel to ceremony/reception and back.</strong></div>
+            <div class="info-list">
+              <div><span>Airports</span><strong>DCA, IAD, and Charlottesville–Albemarle (CHO)</strong></div>
+              <div><span>Hotel block</span><strong>Omni Charlottesville Hotel</strong></div>
+              <div><span>Transportation</span><strong>Shuttle service will run between the hotel and the ceremony/reception.</strong></div>
             </div>
           </div>
         </article>
 
-        <article id="registry" class="post-card registry-post">
-          <div class="post-header">
+        <article id="registry" class="post-card">
+          <header class="post-header">
             <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
-            <div>
-              <h3>@sydneyandgrant</h3>
-              <p>Registry</p>
-            </div>
-            <span class="dots">•••</span>
-          </div>
-
+            <div><h3>@sydneyandgrant</h3><p>Registry</p></div>
+          </header>
           <div class="registry-panel">
-            <p class="kicker dark">Registry</p>
+            <p class="eyebrow">Registry</p>
             <h3>Your presence is our favorite gift.</h3>
-            <p>
-              We are just grateful to celebrate with you. Registry details can be added here.
-            </p>
-
-            <a class="primary-button dark" href="YOUR_REGISTRY_LINK_HERE" target="_blank" rel="noopener">
-              View Registry
-            </a>
+            <p>We are grateful to celebrate with you. Registry details will be added here.</p>
+            <a class="text-link-button" href="YOUR_REGISTRY_LINK_HERE" target="_blank" rel="noopener">View registry</a>
           </div>
         </article>
 
         <article id="qa" class="post-card">
-          <div class="post-header">
+          <header class="post-header">
             <img src="images/grant-sydney.jpeg" alt="" class="avatar" />
-            <div>
-              <h3>@sydneyandgrant</h3>
-              <p>Q&A</p>
-            </div>
-            <span class="dots">•••</span>
-          </div>
-
+            <div><h3>@sydneyandgrant</h3><p>Q&amp;A</p></div>
+          </header>
           <div class="comment-thread">
             <div class="comment">
               <span class="comment-avatar">G</span>
-              <div>
-                <p><strong>guest_01</strong> What should I wear?</p>
-                <p class="reply"><strong>@sydneyandgrant</strong> Semi-Formal attire. More details coming soon.</p>
-              </div>
+              <div><p><strong>guest_01</strong> What should I wear?</p><p class="reply"><strong>@sydneyandgrant</strong> Semi-formal attire. More details are coming soon.</p></div>
             </div>
-
             <div class="comment">
               <span class="comment-avatar">G</span>
-              <div>
-                <p><strong>guest_02</strong> Can I bring a guest?</p>
-                <p class="reply"><strong>@sydneyandgrant</strong> Please refer to your invitation.</p>
-              </div>
+              <div><p><strong>guest_02</strong> Can I bring a guest?</p><p class="reply"><strong>@sydneyandgrant</strong> Please refer to your invitation.</p></div>
             </div>
-
             <div class="comment">
               <span class="comment-avatar">G</span>
-              <div>
-                <p><strong>guest_03</strong> Where should I send my address?</p>
-                <p class="reply"><strong>@sydneyandgrant</strong> Use the "Send us your address!" button at the top and fill out our form.</p>
-              </div>
+              <div><p><strong>guest_03</strong> Where should I send my address?</p><p class="reply"><strong>@sydneyandgrant</strong> Use the address button in the wedding information hub above.</p></div>
             </div>
           </div>
         </article>
       </div>
 
-      <aside id="party" class="side-card right-side party-side-card">
+      <aside id="party" class="side-card party-card">
         <details class="party-drawer" open>
           <summary>
-            <span>
-              <strong>Wedding Party</strong>
-            </span>
-            <span class="drawer-indicator">+</span>
+            <span><span class="eyebrow">People we love</span><strong>Wedding Party</strong></span>
+            <span class="drawer-indicator" aria-hidden="true">+</span>
           </summary>
 
-          <div class="party-side-list">
-            <article class="party-side-member">
-              <img src="images/annie-m.jpeg" alt="Maid of Honor" />
-              <div>
-                <p>Maid of Honor</p>
-                <h4>Annie Masterson</h4>
-                <span>Sydney’s sister.</span>
-              </div>
+          <div class="party-scroll">
+            <article class="party-member">
+              <img src="images/annie-m.jpeg" alt="Annie Masterson" />
+              <div><p>Maid of Honor</p><h3>Annie Masterson</h3><span>Sydney’s sister.</span></div>
             </article>
-
-            <article class="party-side-member">
+            <article class="party-member">
               <img src="images/best-man.jpeg" alt="Best Man" />
-              <div>
-                <p>Best Man</p>
-                <h4>First Last</h4>
-                <span>Description coming soon</span>
-              </div>
+              <div><p>Best Man</p><h3>First Last</h3><span>Description coming soon.</span></div>
             </article>
-
-            <article class="party-side-member">
-              <img src="images/abbey.jpeg" alt="Bridesmaid" />
-              <div>
-                <p>Bridesmaid</p>
-                <h4>Abbey Watson</h4>
-                <span>Description coming soon</span>
-              </div>
+            <article class="party-member">
+              <img src="images/abbey.jpeg" alt="Abbey Watson" />
+              <div><p>Bridesmaid</p><h3>Abbey Watson</h3><span>Description coming soon.</span></div>
             </article>
-
-            <article class="party-side-member">
-              <img src="images/sophia.jpeg" alt="Bridesmaid" />
-              <div>
-                <p>Bridesmaid</p>
-                <h4>Sophia Kennedy</h4>
-                <span>Description coming soon</span>
-              </div>
+            <article class="party-member">
+              <img src="images/sophia.jpeg" alt="Sophia Kennedy" />
+              <div><p>Bridesmaid</p><h3>Sophia Kennedy</h3><span>Description coming soon.</span></div>
             </article>
-
-            <article class="party-side-member">
+            <article class="party-member">
               <img src="images/groomsman-1.jpeg" alt="Groomsman" />
-              <div>
-                <p>Groomsman</p>
-                <h4>First Last</h4>
-                <span>Description coming soon</span>
-              </div>
+              <div><p>Groomsman</p><h3>First Last</h3><span>Description coming soon.</span></div>
             </article>
-
-            <article class="party-side-member">
+            <article class="party-member">
               <img src="images/groomsman-2.jpeg" alt="Groomsman" />
-              <div>
-                <p>Groomsman</p>
-                <h4>First Last</h4>
-                <span>Description coming soon</span>
-              </div>
+              <div><p>Groomsman</p><h3>First Last</h3><span>Description coming soon.</span></div>
             </article>
           </div>
         </details>
@@ -453,23 +254,16 @@
   <footer id="location" class="site-footer">
     <div class="footer-inner">
       <div>
-        <p class="kicker">Location</p>
+        <p class="eyebrow light">Location</p>
         <h2>See you in Virginia</h2>
-
-        <p id="venueAddress">
-          6152 Mannahoc Way<br />
-          Ruckersville, VA 22968
-        </p>
-
-        <button type="button" id="copyAddressButton" class="footer-button">Copy Address</button>
-
-        <p class="contact-line">
-          Email: <a href="mailto:grantorsydney@grantandsydney.com">grantorsydney@grantandsydney.com</a>
-        </p>
+        <p id="venueAddress">6152 Mannahoc Way<br />Ruckersville, VA 22968</p>
+        <button type="button" id="copyAddressButton" class="footer-button">Copy address</button>
+        <p class="contact-line"><a href="mailto:grantorsydney@grantandsydney.com">grantorsydney@grantandsydney.com</a></p>
       </div>
 
       <div class="map-frame">
         <iframe
+          title="Map to 6152 Mannahoc Way, Ruckersville, Virginia"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3135.1903330374103!2d-78.44860598865223!3d38.205477587116164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b470f5ce64c105%3A0x2ffef94f368a5691!2s6152%20Mannahoc%20Way%2C%20Ruckersville%2C%20VA%2022968!5e0!3m2!1sen!2sus!4v1781963313298!5m2!1sen!2sus"
           width="100%"
           height="380"
@@ -484,13 +278,12 @@
   <nav class="mobile-nav" aria-label="Mobile navigation">
     <a href="#home">Home</a>
     <a href="#feed">Updates</a>
-    <a href="#schedule">Plan</a>
-    <a href="#qa">Q&A</a>
-    <a href="rsvp.html">RSVP</a>
+    <a href="#details">Details</a>
+    <a href="#party">People</a>
+    <a href="#location">Map</a>
   </nav>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
   <script type="module" src="script.js"></script>
 </body>
 </html>
