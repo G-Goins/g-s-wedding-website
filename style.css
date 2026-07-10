@@ -1,20 +1,35 @@
 :root {
-  --blue-50: #edf8fb;
+  /* New floral palette */
+  --navy: #10243e;
+  --navy-soft: #19375b;
+  --red: #b82727;
+  --orange: #f36f21;
+  --orange-soft: #f7a05c;
+  --light-blue: #bddce9;
+  --light-blue-soft: #e7f4f8;
+  --yellow: #f4c95d;
+  --yellow-soft: #fff1bf;
+  --white: #ffffff;
+  --cream: #fffaf0;
+
+  /* Backward-compatible aliases used throughout existing CSS */
+  --blue-50: #eef8fb;
   --blue-100: #d8edf4;
   --blue-200: #bddce9;
-  --lavender: #d8d1ea;
-  --blush: #f4d6d6;
-  --peach: #f8dfcf;
-  --cream: #fff8f2;
-  --maroon: #9a3e5a;
-  --maroon-dark: #3b1f2d;
-  --plum: #5e3049;
-  --ink: #2d2430;
-  --muted: #756b74;
-  --white: #ffffff;
-  --line: rgba(59, 31, 45, 0.12);
-  --shadow: 0 24px 70px rgba(59, 31, 45, 0.16);
-  --soft-shadow: 0 14px 40px rgba(59, 31, 45, 0.10);
+  --lavender: #e2f0f5;
+  --blush: #f4c95d;
+  --peach: #f36f21;
+  --maroon: #b82727;
+  --maroon-dark: #10243e;
+  --plum: #19375b;
+
+  --ink: #10243e;
+  --muted: #5f6f82;
+  --line: rgba(16, 36, 62, 0.14);
+
+  --shadow: 0 24px 70px rgba(16, 36, 62, 0.16);
+  --soft-shadow: 0 14px 40px rgba(16, 36, 62, 0.10);
+
   --radius-lg: 32px;
   --radius-md: 22px;
   --radius-pill: 999px;
@@ -34,9 +49,10 @@ body {
   color: var(--ink);
   font-family: "Inter", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(216, 237, 244, 0.95), transparent 30%),
-    radial-gradient(circle at top right, rgba(244, 214, 214, 0.90), transparent 34%),
-    linear-gradient(180deg, var(--blue-50), var(--cream) 44%, var(--blush) 82%, var(--maroon) 100%);
+    radial-gradient(circle at top left, rgba(189, 220, 233, 0.95), transparent 30%),
+    radial-gradient(circle at top right, rgba(244, 201, 93, 0.70), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(243, 111, 33, 0.28), transparent 34%),
+    linear-gradient(180deg, #eef8fb 0%, #fffaf0 42%, #f8e8bd 76%, #10243e 100%);
 }
 
 body::before {
@@ -181,10 +197,10 @@ img {
   text-align: center;
   color: var(--white);
   border-radius: 0 0 46px 46px;
-  background-image:
-    linear-gradient(180deg, rgba(59, 31, 45, 0.18), rgba(59, 31, 45, 0.68)),
-    linear-gradient(120deg, rgba(216, 237, 244, 0.48), rgba(154, 62, 90, 0.38)),
-    url("images/grant-sydney.jpeg");
+background-image:
+  linear-gradient(180deg, rgba(16, 36, 62, 0.18), rgba(16, 36, 62, 0.72)),
+  linear-gradient(120deg, rgba(189, 220, 233, 0.40), rgba(184, 39, 39, 0.30), rgba(243, 111, 33, 0.22)),
+  url("images/grant-sydney.jpeg");
   background-size: cover;
   background-position: center;
   box-shadow: var(--shadow);
@@ -543,9 +559,9 @@ img {
   padding: 30px;
   text-align: center;
   color: var(--white);
-  background:
-    linear-gradient(135deg, rgba(154, 62, 90, 0.84), rgba(216, 237, 244, 0.34)),
-    url("images/grant-sydney.jpeg");
+background:
+  linear-gradient(135deg, rgba(184, 39, 39, 0.78), rgba(16, 36, 62, 0.50), rgba(189, 220, 233, 0.26)),
+  url("images/grant-sydney.jpeg");
   background-size: cover;
   background-position: center;
 }
@@ -633,7 +649,7 @@ img {
 .detail-tile {
   padding: 22px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(216, 237, 244, 0.72), rgba(244, 214, 214, 0.62));
+  background: linear-gradient(135deg, rgba(189, 220, 233, 0.72), rgba(244, 201, 93, 0.48), rgba(243, 111, 33, 0.18));
 }
 
 .detail-tile span {
@@ -797,7 +813,7 @@ img {
 
 .registry-panel {
   text-align: center;
-  background: linear-gradient(135deg, rgba(216, 237, 244, 0.70), rgba(244, 214, 214, 0.70));
+  background: linear-gradient(135deg, rgba(189, 220, 233, 0.72), rgba(255, 241, 191, 0.72), rgba(243, 111, 33, 0.18));
 }
 
 .comment-thread {
@@ -839,9 +855,10 @@ img {
   margin-top: 80px;
   padding: 90px 24px 120px;
   color: var(--white);
-  background:
-    radial-gradient(circle at top left, rgba(216, 237, 244, 0.18), transparent 34%),
-    linear-gradient(135deg, var(--maroon-dark), var(--plum));
+background:
+  radial-gradient(circle at top left, rgba(189, 220, 233, 0.20), transparent 34%),
+  radial-gradient(circle at top right, rgba(243, 111, 33, 0.18), transparent 30%),
+  linear-gradient(135deg, #10243e, #19375b);
 }
 
 .footer-inner {
@@ -1343,4 +1360,45 @@ textarea {
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.45;
+}
+
+.primary-button,
+.topbar-button,
+.mini-button,
+.mobile-nav a:last-child {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  color: var(--white);
+}
+
+.secondary-button {
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  background: rgba(16, 36, 62, 0.26);
+}
+
+.profile-buttons a,
+.profile-buttons button,
+.quick-actions a {
+  background: rgba(189, 220, 233, 0.78);
+  color: var(--navy);
+}
+
+.mini-button.pale {
+  background: var(--yellow-soft);
+  color: var(--navy);
+}
+
+.kicker.dark,
+.detail-tile span,
+.schedule-item span,
+.party-card p,
+.party-side-member p,
+.like-button.liked {
+  color: var(--red);
+}
+
+.verified-badge,
+.drawer-indicator,
+.comment-avatar {
+  background: linear-gradient(135deg, var(--red), var(--orange));
 }
