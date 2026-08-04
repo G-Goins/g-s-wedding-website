@@ -15,6 +15,7 @@
   --radius-lg: 30px;
   --radius-md: 20px;
   --radius-pill: 999px;
+  --tile-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='4' fill='%23fffdf7'/%3E%3Cpath d='M32 4C28 14 22 20 12 24C22 28 28 34 32 44C36 34 42 28 52 24C42 20 36 14 32 4Z' fill='%23123f73'/%3E%3Cpath d='M4 32C14 28 20 22 24 12C28 22 34 28 44 32C34 36 28 42 24 52C20 42 14 36 4 32Z' fill='%2343a9bd' opacity='.9'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23fffdf7' stroke='%230b2341' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23df6a2e'/%3E%3Cpath d='M0 0H15C12 7 7 12 0 15ZM64 0H49C52 7 57 12 64 15ZM0 64V49C7 52 12 57 15 64ZM64 64V49C57 52 52 57 49 64Z' fill='%23b9312b'/%3E%3Cpath d='M1 1H63V63H1Z' fill='none' stroke='%23123f73' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 * {
@@ -84,88 +85,7 @@ button {
   white-space: nowrap;
 }
 
-/* Spanish-tile accent strip */
-:root {
-  --navy: #0b2341;
-  --cobalt: #123f73;
-  --blue: #43a9bd;
-  --sky: #d8eef3;
-  --white: #fffdf7;
-  --cream: #f7f3eb;
-  --orange: #df6a2e;
-  --red: #b9312b;
-  --ink: #0b2341;
-  --muted: #607181;
-  --line: rgba(11, 35, 65, 0.16);
-  --shadow: 0 22px 60px rgba(11, 35, 65, 0.16);
-  --soft-shadow: 0 12px 34px rgba(11, 35, 65, 0.11);
-  --radius-lg: 30px;
-  --radius-md: 20px;
-  --radius-pill: 999px;
-
-  /*
-   * Original Talavera-inspired motif.
-   * The same pattern can be reused throughout the site.
-   */
-  --tile-pattern:
-    radial-gradient(
-      circle at 50% 50%,
-      var(--white) 0 7%,
-      var(--cobalt) 7% 17%,
-      transparent 17%
-    ),
-    radial-gradient(
-      ellipse at 50% 18%,
-      var(--orange) 0 8%,
-      var(--white) 8% 11%,
-      transparent 11%
-    ),
-    radial-gradient(
-      ellipse at 82% 50%,
-      var(--blue) 0 8%,
-      var(--white) 8% 11%,
-      transparent 11%
-    ),
-    radial-gradient(
-      ellipse at 50% 82%,
-      var(--red) 0 8%,
-      var(--white) 8% 11%,
-      transparent 11%
-    ),
-    radial-gradient(
-      ellipse at 18% 50%,
-      var(--cobalt) 0 8%,
-      var(--white) 8% 11%,
-      transparent 11%
-    ),
-    radial-gradient(
-      circle at 0 0,
-      var(--cobalt) 0 12%,
-      var(--white) 12% 16%,
-      transparent 16%
-    ),
-    radial-gradient(
-      circle at 100% 0,
-      var(--red) 0 12%,
-      var(--white) 12% 16%,
-      transparent 16%
-    ),
-    radial-gradient(
-      circle at 100% 100%,
-      var(--blue) 0 12%,
-      var(--white) 12% 16%,
-      transparent 16%
-    ),
-    radial-gradient(
-      circle at 0 100%,
-      var(--orange) 0 12%,
-      var(--white) 12% 16%,
-      transparent 16%
-    ),
-    var(--cream);
-}
-
-/* Talavera-inspired card trim */
+/* Talavera-inspired tile accents */
 .profile-panel::before,
 .post-card::before,
 .side-card::before,
@@ -177,10 +97,12 @@ button {
   content: "";
   display: block;
   width: 100%;
-  height: 14px;
+  height: 32px;
+  background-color: var(--cream);
   background-image: var(--tile-pattern);
-  background-size: 42px 42px;
+  background-repeat: repeat-x;
   background-position: center;
+  background-size: 32px 32px;
   border-bottom: 1px solid rgba(18, 63, 115, 0.16);
 }
 
@@ -195,8 +117,10 @@ button {
   position: absolute;
   inset: 0;
   background-image: var(--tile-pattern);
-  background-size: 72px 72px;
-  opacity: 0.1;
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 64px 64px;
+  opacity: 0.07;
   pointer-events: none;
 }
 
@@ -206,7 +130,7 @@ button {
 }
 
 /* Top navigation */
-  .topbar {
+.topbar {
     position: fixed;
     top: 14px;
     left: 0;
@@ -216,7 +140,7 @@ button {
     pointer-events: none;
   }
 
-  .topbar-inner {
+.topbar-inner {
   width: min(calc(100% - 24px), 1640px);
   margin: 0 auto;
   display: flex;
@@ -239,7 +163,7 @@ button {
   pointer-events: auto;
 }
 
-  .wordmark {
+.wordmark {
     display: inline-block;
     margin: 0;
     color: var(--white);
@@ -1348,62 +1272,24 @@ textarea {
 
 .proposal-status,
 .proposal-card {
-  width: min(100%, 820px);
-  margin: 0 auto;
-}
-
-.proposal-status {
-  padding: 30px;
-  border: 2px solid rgba(18, 63, 115, 0.16);
-  border-radius: var(--radius-lg);
-  background: var(--white);
-  box-shadow: var(--soft-shadow);
-  text-align: center;
-}
-
-.proposal-card {
-  overflow: hidden;
-  padding: 0 30px 34px;
-  border: 2px solid rgba(18, 63, 115, 0.16);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 253, 247, 0.98),
-      rgba(247, 243, 235, 0.94)
-    );
-  box-shadow: var(--shadow);
-}
-
-.proposal-card > .eyebrow {
-  margin-top: 30px;
-  text-align: center;
+  width: min(100%, 920px);
 }
 
 .proposal-card h1 {
-  margin: 0;
-  color: var(--navy);
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(3.5rem, 9vw, 6.5rem);
-  line-height: 0.9;
-  text-align: center;
-}
-
-.proposal-intro {
-  max-width: 640px;
-  margin: 22px auto 28px;
-  color: var(--muted);
-  line-height: 1.7;
-  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 34px;
+  text-wrap: balance;
 }
 
 .proposal-video {
   position: relative;
   width: 100%;
-  margin-bottom: 28px;
+  margin: 0 auto 34px;
   overflow: hidden;
+  border: 3px solid rgba(18, 63, 115, 0.18);
   border-radius: var(--radius-md);
   background: var(--navy);
+  box-shadow: var(--soft-shadow);
   aspect-ratio: 16 / 9;
 }
 
@@ -1415,35 +1301,144 @@ textarea {
   border: 0;
 }
 
-.proposal-form label {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 18px;
-  color: var(--navy);
-  font-weight: 800;
-}
-
-.proposal-form select {
-  width: 100%;
-  padding: 12px 14px;
-  color: var(--navy);
-  border: 1px solid rgba(18, 63, 115, 0.2);
-  border-radius: 14px;
-  background: rgba(255, 253, 247, 0.95);
-  font: inherit;
-}
-
-.proposal-form fieldset {
-  margin: 0 0 22px;
-  padding: 18px;
-  border: 1px solid var(--line);
+.proposal-letter {
+  margin: 0 auto 34px;
+  padding: clamp(24px, 5vw, 44px);
+  border: 1px solid rgba(18, 63, 115, 0.16);
   border-radius: var(--radius-md);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 253, 247, 0.98),
+      rgba(247, 243, 235, 0.92)
+    );
 }
 
-.proposal-form legend {
-  padding: 0 8px;
+.proposal-letter p {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.proposal-response-fieldset {
+  margin: 0 0 28px;
+  padding: 0;
+  border: 0;
+}
+
+.proposal-response-fieldset legend {
+  margin-bottom: 14px;
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.proposal-response-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.proposal-response-option {
+  position: relative;
+  display: block;
+  margin: 0;
+  cursor: pointer;
+}
+
+.proposal-response-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.proposal-response-option span {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  color: var(--navy);
+  border: 2px solid rgba(18, 63, 115, 0.18);
+  border-radius: 16px;
+  background: rgba(255, 253, 247, 0.96);
+  font-weight: 800;
+  text-align: center;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.proposal-response-option span:hover {
+  border-color: var(--cobalt);
+  transform: translateY(-2px);
+}
+
+.proposal-response-option input:checked + span {
+  color: var(--white);
+  border-color: var(--cobalt);
+  background:
+    linear-gradient(
+      135deg,
+      var(--cobalt),
+      var(--blue)
+    );
+  box-shadow: 0 10px 24px rgba(11, 35, 65, 0.18);
+}
+
+.proposal-response-option input:focus-visible + span {
+  outline: 3px solid rgba(67, 169, 189, 0.4);
+  outline-offset: 3px;
+}
+
+.proposal-note-label {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
   color: var(--navy);
   font-weight: 800;
+}
+
+.proposal-note-label textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+}
+
+.proposal-submit-button {
+  width: 100%;
+  min-height: 58px;
+}
+
+.proposal-submit-button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.proposal-form .form-message {
+  margin-top: 16px;
+}
+
+@media (max-width: 700px) {
+  .proposal-response-options {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-response-option span {
+    min-height: 54px;
+  }
+
+  .proposal-letter {
+    padding: 24px 20px;
+  }
 }
 
 @media (max-width: 600px) {

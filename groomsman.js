@@ -15,16 +15,17 @@ const proposalCard = document.getElementById("proposalCard");
 const proposalHeading = document.getElementById("proposalHeading");
 const proposalMessage = document.getElementById("proposalMessage");
 const proposalVideo = document.getElementById("proposalVideo");
+const proposalVideoContainer = document.getElementById(
+  "proposalVideoContainer"
+);
 const proposalForm = document.getElementById("proposalForm");
+const proposalNote = document.getElementById("proposalNote");
 const proposalFormMessage = document.getElementById(
   "proposalFormMessage"
 );
 const proposalSubmitButton = document.getElementById(
   "proposalSubmitButton"
 );
-const shirtSize = document.getElementById("shirtSize");
-const proposalPhone = document.getElementById("proposalPhone");
-const proposalNote = document.getElementById("proposalNote");
 
 let currentInviteId = null;
 
@@ -41,19 +42,112 @@ function setFormMessage(text) {
   proposalFormMessage.textContent = text || "";
 }
 
-function isAllowedVideoUrl(value) {
+function getEmbeddableVideoUrl(value) {
   try {
-    const url = new URL(value);
+    const url = new URL(String(value || "").trim());
+    const hostname = url.hostname
+      .toLowerCase()
+      .replace(/^www\./, "");
 
-    return [
-      "www.youtube.com",
-      "youtube.com",
-      "www.youtube-nocookie.com",
-      "player.vimeo.com"
-    ].includes(url.hostname);
+    if (hostname === "youtu.be") {
+      const videoId = url.pathname
+        .split("/")
+        .filter(Boolean)[0];
+
+      return videoId
+        ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`
+        : null;
+    }
+
+    if (
+      hostname === "youtube.com" ||
+      hostname === "m.youtube.com" ||
+      hostname === "youtube-nocookie.com"
+    ) {
+      if (url.pathname.startsWith("/embed/")) {
+        const videoId = url.pathname
+          .split("/embed/")[1]
+          ?.split("/")[0];
+
+        return videoId
+          ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`
+          : null;
+      }
+
+      if (url.pathname.startsWith("/shorts/")) {
+        const videoId = url.pathname
+          .split("/shorts/")[1]
+          ?.split("/")[0];
+
+        return videoId
+          ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`
+          : null;
+      }
+
+      const videoId = url.searchParams.get("v");
+
+      return videoId
+        ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`
+        : null;
+    }
+
+    if (hostname === "player.vimeo.com") {
+      return url.toString();
+    }
+
+    if (hostname === "vimeo.com") {
+      const videoId = url.pathname
+        .split("/")
+        .filter(Boolean)[0];
+
+      return videoId
+        ? `https://player.vimeo.com/video/${encodeURIComponent(videoId)}`
+        : null;
+    }
+
+    return null;
   } catch {
-    return false;
+    return null;
   }
+}
+
+function renderVideo(videoUrl) {
+  const embeddableUrl = getEmbeddableVideoUrl(videoUrl);
+
+  if (!embeddableUrl) {
+    proposalVideo.removeAttribute("src");
+    proposalVideoContainer.classList.add("hidden");
+    return;
+  }
+
+  proposalVideo.src = embeddableUrl;
+  proposalVideoContainer.classList.remove("hidden");
+}
+
+async function loadExistingResponse(inviteId) {
+  const responseSnapshot = await getDoc(
+    doc(db, "groomsmanResponses", inviteId)
+  );
+
+  if (!responseSnapshot.exists()) {
+    return;
+  }
+
+  const savedResponse = responseSnapshot.data();
+
+  if (savedResponse.response) {
+    const responseInput = proposalForm.querySelector(
+      `input[name="response"][value="${CSS.escape(savedResponse.response)}"]`
+    );
+
+    if (responseInput) {
+      responseInput.checked = true;
+    }
+  }
+
+  proposalNote.value = savedResponse.note || "";
+  proposalSubmitButton.textContent = "Update response";
+  setFormMessage("Your previous response has been loaded.");
 }
 
 async function loadProposal() {
@@ -89,30 +183,26 @@ async function loadProposal() {
     currentInviteId = inviteId;
 
     const firstName =
-      String(invitation.firstName || "").trim() || "My Friend";
+      String(invitation.firstName || "").trim() ||
+      "My Friend";
 
     proposalHeading.textContent =
+      invitation.title ||
       `${firstName}, will you be my groomsman?`;
+
+    renderVideo(invitation.videoUrl);
 
     proposalMessage.textContent =
       invitation.message ||
       "I would be honored to have you stand beside me.";
 
-    if (
-      invitation.videoUrl &&
-      isAllowedVideoUrl(invitation.videoUrl)
-    ) {
-      proposalVideo.src = invitation.videoUrl;
-    } else {
-      proposalVideo.closest(".proposal-video").classList.add(
-        "hidden"
-      );
-    }
-
     loadingElement.classList.add("hidden");
     proposalCard.classList.remove("hidden");
+
+    await loadExistingResponse(inviteId);
   } catch (error) {
     console.error("Could not load proposal:", error);
+
     setPageMessage(
       "Something went wrong while loading this invitation."
     );
@@ -131,18 +221,17 @@ proposalForm.addEventListener("submit", async (event) => {
     proposalForm.elements.response.value;
 
   if (!selectedResponse) {
-    setFormMessage("Please select a response.");
+    setFormMessage("Please select an answer.");
     return;
   }
 
   proposalSubmitButton.disabled = true;
+  proposalSubmitButton.textContent = "Saving...";
   setFormMessage("Saving your response...");
 
   const responseData = {
     inviteId: currentInviteId,
     response: selectedResponse,
-    shirtSize: shirtSize.value,
-    phone: proposalPhone.value.trim(),
     note: proposalNote.value.trim(),
     submittedAt: serverTimestamp()
   };
@@ -160,10 +249,14 @@ proposalForm.addEventListener("submit", async (event) => {
       }
     );
 
-    setFormMessage("Your response has been saved. Thank you.");
     proposalSubmitButton.textContent = "Response saved";
+    setFormMessage(
+      "Your response has been saved. Thank you."
+    );
   } catch (error) {
     console.error("Could not save response:", error);
+
+    proposalSubmitButton.textContent = "Send response";
     setFormMessage(
       "Your response could not be saved. Please try again."
     );

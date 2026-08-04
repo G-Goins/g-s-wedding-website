@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>A Question for You | Sydney & Grant</title>
+  <title>A Question for You | Sydney &amp; Grant</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,7 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20260804-1" />
 </head>
 
 <body>
@@ -26,86 +26,98 @@
     <section id="proposalCard" class="proposal-card hidden">
       <p class="eyebrow">A question for you</p>
 
+      <!-- 1. Main question -->
       <h1 id="proposalHeading"></h1>
 
-      <p id="proposalMessage" class="proposal-intro"></p>
-
-      <div class="proposal-video">
+      <!-- 2. Personalized video -->
+      <div id="proposalVideoContainer" class="proposal-video">
         <iframe
           id="proposalVideo"
-          title="Personal message"
+          title="Personal video message"
           src=""
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen
         ></iframe>
       </div>
 
+      <!-- 3. Long personalized message from you -->
+      <div class="proposal-letter">
+        <p id="proposalMessage"></p>
+      </div>
+
       <form id="proposalForm" class="proposal-form">
-        <fieldset>
-          <legend>Will you be my groomsman?</legend>
+        <!-- 4. Response buttons -->
+        <fieldset class="proposal-response-fieldset">
+          <legend>Your answer</legend>
 
-          <label class="radio-row">
-            <input type="radio" name="response" value="yes" required />
-            <span>Absolutely</span>
-          </label>
+          <div class="proposal-response-options">
+            <label class="proposal-response-option">
+              <input
+                type="radio"
+                name="response"
+                value="yes"
+                required
+              />
+              <span>Absolutely</span>
+            </label>
 
-          <label class="radio-row">
-            <input type="radio" name="response" value="talk" required />
-            <span>Let’s talk first</span>
-          </label>
+            <label class="proposal-response-option">
+              <input
+                type="radio"
+                name="response"
+                value="talk"
+                required
+              />
+              <span>Let’s talk first</span>
+            </label>
 
-          <label class="radio-row">
-            <input type="radio" name="response" value="no" required />
-            <span>I cannot commit</span>
-          </label>
+            <label class="proposal-response-option">
+              <input
+                type="radio"
+                name="response"
+                value="no"
+                required
+              />
+              <span>I cannot commit</span>
+            </label>
+          </div>
         </fieldset>
 
-        <label for="shirtSize">
-          Shirt size
-          <select id="shirtSize">
-            <option value="">Select a size</option>
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="2XL">2XL</option>
-            <option value="3XL">3XL</option>
-          </select>
-        </label>
-
-        <label for="proposalPhone">
-          Phone number
-          <input
-            id="proposalPhone"
-            type="tel"
-            autocomplete="tel"
-            placeholder="Optional"
-          />
-        </label>
-
-        <label for="proposalNote">
-          Message
+        <!-- 5. Message from the groomsman -->
+        <label class="proposal-note-label" for="proposalNote">
+          Leave me a message
           <textarea
             id="proposalNote"
-            rows="4"
-            placeholder="Optional note"
+            rows="6"
+            maxlength="2000"
+            placeholder="Write anything you would like me to know."
           ></textarea>
         </label>
 
+        <!-- 6. Submit -->
         <button
           id="proposalSubmitButton"
           type="submit"
-          class="primary-button"
+          class="primary-button proposal-submit-button"
         >
           Send response
         </button>
       </form>
 
-      <p id="proposalFormMessage" class="form-message"></p>
+      <p
+        id="proposalFormMessage"
+        class="form-message"
+        role="status"
+        aria-live="polite"
+      ></p>
     </section>
   </main>
 
-  <script type="module" src="groomsman.js"></script>
+  <script
+    type="module"
+    src="groomsman.js?v=20260804-1"
+  ></script>
 </body>
 </html>
