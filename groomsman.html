@@ -3,33 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>A Question for You | Sydney &amp; Grant</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
-
-  <link rel="stylesheet" href="style.css?v=20260804-1" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=20260804-3" />
 </head>
-
-<body>
+<body class="proposal-body">
   <main class="proposal-page">
-    <section id="proposalLoading" class="proposal-status">
-      Loading your invitation...
-    </section>
+    <section id="proposalLoading" class="proposal-status">Loading your invitation...</section>
 
     <section id="proposalCard" class="proposal-card hidden">
       <p class="eyebrow">A question for you</p>
-
-      <!-- 1. Main question -->
       <h1 id="proposalHeading"></h1>
 
-      <!-- 2. Personalized video -->
       <div id="proposalVideoContainer" class="proposal-video">
         <iframe
           id="proposalVideo"
@@ -42,82 +29,41 @@
         ></iframe>
       </div>
 
-      <!-- 3. Long personalized message from you -->
       <div class="proposal-letter">
         <p id="proposalMessage"></p>
       </div>
 
       <form id="proposalForm" class="proposal-form">
-        <!-- 4. Response buttons -->
         <fieldset class="proposal-response-fieldset">
           <legend>Your answer</legend>
-
           <div class="proposal-response-options">
             <label class="proposal-response-option">
-              <input
-                type="radio"
-                name="response"
-                value="yes"
-                required
-              />
+              <input type="radio" name="response" value="yes" required />
               <span>Absolutely</span>
             </label>
-
             <label class="proposal-response-option">
-              <input
-                type="radio"
-                name="response"
-                value="talk"
-                required
-              />
+              <input type="radio" name="response" value="talk" required />
               <span>Let’s talk first</span>
             </label>
-
             <label class="proposal-response-option">
-              <input
-                type="radio"
-                name="response"
-                value="no"
-                required
-              />
+              <input type="radio" name="response" value="no" required />
               <span>I cannot commit</span>
             </label>
           </div>
         </fieldset>
 
-        <!-- 5. Message from the groomsman -->
         <label class="proposal-note-label" for="proposalNote">
           Leave me a message
-          <textarea
-            id="proposalNote"
-            rows="6"
-            maxlength="2000"
-            placeholder="Write anything you would like me to know."
-          ></textarea>
+          <textarea id="proposalNote" rows="6" maxlength="2000" placeholder="Write anything you would like me to know."></textarea>
         </label>
 
-        <!-- 6. Submit -->
-        <button
-          id="proposalSubmitButton"
-          type="submit"
-          class="primary-button proposal-submit-button"
-        >
-          Send response
-        </button>
+        <button id="proposalSubmitButton" type="submit" class="primary-button proposal-submit-button">Send response</button>
       </form>
 
-      <p
-        id="proposalFormMessage"
-        class="form-message"
-        role="status"
-        aria-live="polite"
-      ></p>
+      <p id="proposalFormMessage" class="form-message" role="status" aria-live="polite"></p>
     </section>
   </main>
 
-  <script
-    type="module"
-    src="groomsman.js?v=20260804-1"
-  ></script>
+  <script type="module" src="groomsman.js?v=20260804-3"></script>
 </body>
 </html>

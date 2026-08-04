@@ -1,7 +1,4 @@
-import {
-  db,
-  firebaseConfigured
-} from "./firebase-config.js";
+import { db, firebaseConfigured } from "./firebase-config.js";
 
 import {
   doc,
@@ -60,9 +57,11 @@ function getEmbeddableVideoUrl(value) {
     }
 
     if (
-      hostname === "youtube.com" ||
-      hostname === "m.youtube.com" ||
-      hostname === "youtube-nocookie.com"
+      [
+        "youtube.com",
+        "m.youtube.com",
+        "youtube-nocookie.com"
+      ].includes(hostname)
     ) {
       if (url.pathname.startsWith("/embed/")) {
         const videoId = url.pathname
@@ -124,32 +123,6 @@ function renderVideo(videoUrl) {
   proposalVideoContainer.classList.remove("hidden");
 }
 
-async function loadExistingResponse(inviteId) {
-  const responseSnapshot = await getDoc(
-    doc(db, "groomsmanResponses", inviteId)
-  );
-
-  if (!responseSnapshot.exists()) {
-    return;
-  }
-
-  const savedResponse = responseSnapshot.data();
-
-  if (savedResponse.response) {
-    const responseInput = proposalForm.querySelector(
-      `input[name="response"][value="${CSS.escape(savedResponse.response)}"]`
-    );
-
-    if (responseInput) {
-      responseInput.checked = true;
-    }
-  }
-
-  proposalNote.value = savedResponse.note || "";
-  proposalSubmitButton.textContent = "Update response";
-  setFormMessage("Your previous response has been loaded.");
-}
-
 async function loadProposal() {
   if (!firebaseConfigured || !db) {
     setPageMessage("Firebase is not configured.");
@@ -198,8 +171,6 @@ async function loadProposal() {
 
     loadingElement.classList.add("hidden");
     proposalCard.classList.remove("hidden");
-
-    await loadExistingResponse(inviteId);
   } catch (error) {
     console.error("Could not load proposal:", error);
 
@@ -229,13 +200,6 @@ proposalForm.addEventListener("submit", async (event) => {
   proposalSubmitButton.textContent = "Saving...";
   setFormMessage("Saving your response...");
 
-  const responseData = {
-    inviteId: currentInviteId,
-    response: selectedResponse,
-    note: proposalNote.value.trim(),
-    submittedAt: serverTimestamp()
-  };
-
   try {
     await setDoc(
       doc(
@@ -243,13 +207,19 @@ proposalForm.addEventListener("submit", async (event) => {
         "groomsmanResponses",
         currentInviteId
       ),
-      responseData,
       {
-        merge: true
+        inviteId: currentInviteId,
+        response: selectedResponse,
+        note: proposalNote.value.trim(),
+        submittedAt: serverTimestamp()
+      },
+      {
+        merge: false
       }
     );
 
     proposalSubmitButton.textContent = "Response saved";
+
     setFormMessage(
       "Your response has been saved. Thank you."
     );
@@ -257,6 +227,7 @@ proposalForm.addEventListener("submit", async (event) => {
     console.error("Could not save response:", error);
 
     proposalSubmitButton.textContent = "Send response";
+
     setFormMessage(
       "Your response could not be saved. Please try again."
     );
