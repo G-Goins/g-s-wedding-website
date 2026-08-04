@@ -1459,6 +1459,23 @@ textarea {
   text-align: center;
 }
 
+.proposal-letter p {
+  margin: 0 0 1.2em;
+}
+
+.proposal-letter p:last-child {
+  margin-bottom: 0;
+}
+
+.proposal-letter strong {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.proposal-letter em {
+  font-style: italic;
+}
+
 @media (max-width: 700px) {
   .proposal-page {
     width: min(100% - 20px, 980px);

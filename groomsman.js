@@ -123,6 +123,32 @@ function renderVideo(videoUrl) {
   proposalVideoContainer.classList.remove("hidden");
 }
 
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatProposalMessage(value) {
+  return escapeHtml(value)
+    // Bold: **text**
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    // Italic: *text*
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Paragraph breaks
+    .split(/\n{2,}/)
+    .map((paragraph) => {
+      const lines = paragraph.replace(/\n/g, "<br>");
+      return `<p>${lines}</p>`;
+    })
+    .join("");
+}
+
+
 async function loadProposal() {
   if (!firebaseConfigured || !db) {
     setPageMessage("Firebase is not configured.");
@@ -161,13 +187,14 @@ async function loadProposal() {
 
     proposalHeading.textContent =
       invitation.title ||
-      `${firstName}, will you be my groomsman?`;
+      `${firstName}, a quick question for you...`;
 
     renderVideo(invitation.videoUrl);
 
-    proposalMessage.textContent =
-      invitation.message ||
-      "I would be honored to have you stand beside me.";
+    proposalMessage.innerHTML = formatProposalMessage(
+    invitation.message ||
+    "I would be honored to have you stand beside me."
+    );
 
     loadingElement.classList.add("hidden");
     proposalCard.classList.remove("hidden");
