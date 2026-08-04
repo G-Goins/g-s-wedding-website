@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>A Question for You | Sydney & Grant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="proposal-page">
+    <section id="proposalLoading" class="proposal-status">
+      Loading your invitation...
+    </section>
+
+    <section id="proposalCard" class="proposal-card hidden">
+      <p class="eyebrow">A question for you</p>
+
+      <h1 id="proposalHeading"></h1>
+
+      <p id="proposalMessage" class="proposal-intro"></p>
+
+      <div class="proposal-video">
+        <iframe
+          id="proposalVideo"
+          title="Personal message"
+          src=""
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <form id="proposalForm" class="proposal-form">
+        <fieldset>
+          <legend>Will you be my groomsman?</legend>
+
+          <label class="radio-row">
+            <input type="radio" name="response" value="yes" required />
+            <span>Absolutely</span>
+          </label>
+
+          <label class="radio-row">
+            <input type="radio" name="response" value="talk" required />
+            <span>Let’s talk first</span>
+          </label>
+
+          <label class="radio-row">
+            <input type="radio" name="response" value="no" required />
+            <span>I cannot commit</span>
+          </label>
+        </fieldset>
+
+        <label for="shirtSize">
+          Shirt size
+          <select id="shirtSize">
+            <option value="">Select a size</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="2XL">2XL</option>
+            <option value="3XL">3XL</option>
+          </select>
+        </label>
+
+        <label for="proposalPhone">
+          Phone number
+          <input
+            id="proposalPhone"
+            type="tel"
+            autocomplete="tel"
+            placeholder="Optional"
+          />
+        </label>
+
+        <label for="proposalNote">
+          Message
+          <textarea
+            id="proposalNote"
+            rows="4"
+            placeholder="Optional note"
+          ></textarea>
+        </label>
+
+        <button
+          id="proposalSubmitButton"
+          type="submit"
+          class="primary-button"
+        >
+          Send response
+        </button>
+      </form>
+
+      <p id="proposalFormMessage" class="form-message"></p>
+    </section>
+  </main>
+
+  <script type="module" src="groomsman.js"></script>
+</body>
+</html>

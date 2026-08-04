@@ -85,28 +85,124 @@ button {
 }
 
 /* Spanish-tile accent strip */
+:root {
+  --navy: #0b2341;
+  --cobalt: #123f73;
+  --blue: #43a9bd;
+  --sky: #d8eef3;
+  --white: #fffdf7;
+  --cream: #f7f3eb;
+  --orange: #df6a2e;
+  --red: #b9312b;
+  --ink: #0b2341;
+  --muted: #607181;
+  --line: rgba(11, 35, 65, 0.16);
+  --shadow: 0 22px 60px rgba(11, 35, 65, 0.16);
+  --soft-shadow: 0 12px 34px rgba(11, 35, 65, 0.11);
+  --radius-lg: 30px;
+  --radius-md: 20px;
+  --radius-pill: 999px;
+
+  /*
+   * Original Talavera-inspired motif.
+   * The same pattern can be reused throughout the site.
+   */
+  --tile-pattern:
+    radial-gradient(
+      circle at 50% 50%,
+      var(--white) 0 7%,
+      var(--cobalt) 7% 17%,
+      transparent 17%
+    ),
+    radial-gradient(
+      ellipse at 50% 18%,
+      var(--orange) 0 8%,
+      var(--white) 8% 11%,
+      transparent 11%
+    ),
+    radial-gradient(
+      ellipse at 82% 50%,
+      var(--blue) 0 8%,
+      var(--white) 8% 11%,
+      transparent 11%
+    ),
+    radial-gradient(
+      ellipse at 50% 82%,
+      var(--red) 0 8%,
+      var(--white) 8% 11%,
+      transparent 11%
+    ),
+    radial-gradient(
+      ellipse at 18% 50%,
+      var(--cobalt) 0 8%,
+      var(--white) 8% 11%,
+      transparent 11%
+    ),
+    radial-gradient(
+      circle at 0 0,
+      var(--cobalt) 0 12%,
+      var(--white) 12% 16%,
+      transparent 16%
+    ),
+    radial-gradient(
+      circle at 100% 0,
+      var(--red) 0 12%,
+      var(--white) 12% 16%,
+      transparent 16%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      var(--blue) 0 12%,
+      var(--white) 12% 16%,
+      transparent 16%
+    ),
+    radial-gradient(
+      circle at 0 100%,
+      var(--orange) 0 12%,
+      var(--white) 12% 16%,
+      transparent 16%
+    ),
+    var(--cream);
+}
+
+/* Talavera-inspired card trim */
 .profile-panel::before,
 .post-card::before,
 .side-card::before,
 .admin-card::before,
 .lookup-form::before,
-.invite-card::before {
+.invite-card::before,
+.registry-card::before,
+.proposal-card::before {
   content: "";
   display: block;
   width: 100%;
-  height: 8px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      var(--cobalt) 0 22px,
-      var(--white) 22px 28px,
-      var(--orange) 28px 50px,
-      var(--white) 50px 56px,
-      var(--red) 56px 78px,
-      var(--white) 78px 84px,
-      var(--blue) 84px 106px,
-      var(--white) 106px 112px
-    );
+  height: 14px;
+  background-image: var(--tile-pattern);
+  background-size: 42px 42px;
+  background-position: center;
+  border-bottom: 1px solid rgba(18, 63, 115, 0.16);
+}
+
+.tile-banner {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--cream);
+}
+
+.tile-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--tile-pattern);
+  background-size: 72px 72px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.tile-banner > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Top navigation */
@@ -1140,6 +1236,230 @@ textarea {
   width: auto;
 }
 
+.registry-page {
+  min-height: 100vh;
+  padding: 38px 20px 80px;
+}
+
+.registry-page-shell {
+  width: min(100%, 1040px);
+  margin: 0 auto;
+}
+
+.registry-thank-you {
+  margin-bottom: 28px;
+  padding: 64px clamp(24px, 7vw, 82px);
+  overflow: hidden;
+  border: 2px solid rgba(18, 63, 115, 0.16);
+  border-radius: var(--radius-lg);
+  background-color: rgba(255, 253, 247, 0.96);
+  box-shadow: var(--soft-shadow);
+  text-align: center;
+}
+
+.registry-thank-you h1 {
+  margin: 0 0 18px;
+  color: var(--navy);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(4rem, 10vw, 7rem);
+  line-height: 0.9;
+}
+
+.registry-thank-you p:last-child {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.registry-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.registry-card {
+  display: block;
+  overflow: hidden;
+  padding: 0 26px 28px;
+  color: var(--navy);
+  border: 2px solid rgba(18, 63, 115, 0.16);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 253, 247, 0.98),
+    rgba(247, 243, 235, 0.94)
+  );
+  box-shadow: var(--soft-shadow);
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.registry-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.registry-card-label {
+  display: block;
+  margin-top: 24px;
+  color: var(--red);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.registry-card h2 {
+  margin: 8px 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.registry-card p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.registry-card strong {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--cobalt);
+}
+
+@media (max-width: 700px) {
+  .registry-options {
+    grid-template-columns: 1fr;
+  }
+
+  .registry-thank-you {
+    padding: 48px 22px;
+  }
+}
+
+.proposal-page {
+  min-height: 100vh;
+  padding: 42px 20px 90px;
+}
+
+.proposal-status,
+.proposal-card {
+  width: min(100%, 820px);
+  margin: 0 auto;
+}
+
+.proposal-status {
+  padding: 30px;
+  border: 2px solid rgba(18, 63, 115, 0.16);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  box-shadow: var(--soft-shadow);
+  text-align: center;
+}
+
+.proposal-card {
+  overflow: hidden;
+  padding: 0 30px 34px;
+  border: 2px solid rgba(18, 63, 115, 0.16);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 253, 247, 0.98),
+      rgba(247, 243, 235, 0.94)
+    );
+  box-shadow: var(--shadow);
+}
+
+.proposal-card > .eyebrow {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.proposal-card h1 {
+  margin: 0;
+  color: var(--navy);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  line-height: 0.9;
+  text-align: center;
+}
+
+.proposal-intro {
+  max-width: 640px;
+  margin: 22px auto 28px;
+  color: var(--muted);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.proposal-video {
+  position: relative;
+  width: 100%;
+  margin-bottom: 28px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--navy);
+  aspect-ratio: 16 / 9;
+}
+
+.proposal-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.proposal-form label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.proposal-form select {
+  width: 100%;
+  padding: 12px 14px;
+  color: var(--navy);
+  border: 1px solid rgba(18, 63, 115, 0.2);
+  border-radius: 14px;
+  background: rgba(255, 253, 247, 0.95);
+  font: inherit;
+}
+
+.proposal-form fieldset {
+  margin: 0 0 22px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.proposal-form legend {
+  padding: 0 8px;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .proposal-page {
+    padding: 18px 12px 70px;
+  }
+
+  .proposal-card {
+    padding: 0 18px 26px;
+  }
+
+  .proposal-card h1 {
+    font-size: clamp(3.2rem, 16vw, 5rem);
+  }
+}
+
 /* Responsive */
 @media (max-width: 1120px) {
   .content-grid {
@@ -1207,6 +1527,11 @@ textarea {
     padding: 70px 18px 42px;
   }
 
+  .hero-photo {
+    object-fit: cover;
+    object-position: center;
+  }
+
   .hero-content h1 {
     font-size: clamp(4.1rem, 18vw, 7rem);
   }
@@ -1270,7 +1595,7 @@ textarea {
 
   /* Fixed mobile-only navigation */
   .mobile-nav {
-    position: fixed;
+    position: absolute;
     left: 12px;
     right: 12px;
     bottom: calc(10px + env(safe-area-inset-bottom));
