@@ -1265,21 +1265,14 @@ textarea {
   }
 }
 
-/* Groomsman proposal page */
-.proposal-body {
-  min-height: 100vh;
-}
-
 .proposal-page {
-  width: min(100% - 32px, 980px);
   min-height: 100vh;
-  margin: 0 auto;
-  padding: 48px 0 90px;
+  padding: 42px 20px 90px;
 }
 
 .proposal-status,
 .proposal-card {
-  width: 100%;
+  width: min(100%, 820px);
   margin: 0 auto;
 }
 
@@ -1294,40 +1287,47 @@ textarea {
 
 .proposal-card {
   overflow: hidden;
-  padding: 0 clamp(22px, 5vw, 54px) 48px;
+  padding: 0 30px 34px;
   border: 2px solid rgba(18, 63, 115, 0.16);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255, 253, 247, 0.99), rgba(247, 243, 235, 0.96));
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 253, 247, 0.98),
+      rgba(247, 243, 235, 0.94)
+    );
   box-shadow: var(--shadow);
 }
 
 .proposal-card > .eyebrow {
-  margin: 34px 0 12px;
+  margin-top: 30px;
   text-align: center;
 }
 
 .proposal-card h1 {
-  max-width: 820px;
-  margin: 0 auto 34px;
+  margin: 0;
   color: var(--navy);
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(3.35rem, 7vw, 6.3rem);
-  font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  line-height: 0.9;
   text-align: center;
-  text-wrap: balance;
+}
+
+.proposal-intro {
+  max-width: 640px;
+  margin: 22px auto 28px;
+  color: var(--muted);
+  line-height: 1.7;
+  text-align: center;
 }
 
 .proposal-video {
   position: relative;
   width: 100%;
-  margin: 0 auto 30px;
+  margin-bottom: 28px;
   overflow: hidden;
-  border: 3px solid rgba(18, 63, 115, 0.2);
-  border-radius: 24px;
+  border-radius: var(--radius-md);
   background: var(--navy);
-  box-shadow: var(--soft-shadow);
   aspect-ratio: 16 / 9;
 }
 
@@ -1339,179 +1339,48 @@ textarea {
   border: 0;
 }
 
-.proposal-letter {
-  margin: 0 auto 32px;
-  padding: clamp(24px, 4vw, 38px);
-  border: 1px solid rgba(18, 63, 115, 0.16);
-  border-radius: 22px;
-  background: rgba(255, 253, 247, 0.72);
-}
-
-.proposal-letter p {
-  max-width: 760px;
-  margin: 0 auto;
-  color: var(--ink);
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
-  line-height: 1.65;
-  white-space: pre-line;
-}
-
-.proposal-response-fieldset {
-  margin: 0 0 28px;
-  padding: 0;
-  border: 0;
-}
-
-.proposal-response-fieldset legend {
-  margin-bottom: 14px;
-  padding: 0;
-  color: var(--navy);
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.proposal-response-options {
+.proposal-form label {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.proposal-response-option {
-  position: relative;
-  display: block;
-  margin: 0;
-  cursor: pointer;
-}
-
-.proposal-response-option input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.proposal-response-option span {
-  display: flex;
-  min-height: 62px;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 16px;
+  gap: 8px;
+  margin-bottom: 18px;
   color: var(--navy);
-  border: 2px solid rgba(18, 63, 115, 0.18);
-  border-radius: 17px;
-  background: rgba(255, 253, 247, 0.96);
-  font-weight: 900;
-  text-align: center;
-  transition: transform 0.18s ease, color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  font-weight: 800;
 }
 
-.proposal-response-option span:hover {
-  border-color: var(--cobalt);
-  transform: translateY(-2px);
-}
-
-.proposal-response-option input:checked + span {
-  color: var(--white);
-  border-color: var(--cobalt);
-  background: linear-gradient(135deg, var(--cobalt), var(--blue));
-  box-shadow: 0 10px 24px rgba(11, 35, 65, 0.18);
-}
-
-.proposal-response-option input:focus-visible + span {
-  outline: 3px solid rgba(67, 169, 189, 0.38);
-  outline-offset: 3px;
-}
-
-.proposal-note-label {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 20px;
-  color: var(--navy);
-  font-weight: 900;
-}
-
-.proposal-note-label textarea {
+.proposal-form select {
   width: 100%;
-  min-height: 150px;
-  padding: 16px;
-  resize: vertical;
-  color: var(--ink);
+  padding: 12px 14px;
+  color: var(--navy);
   border: 1px solid rgba(18, 63, 115, 0.2);
-  border-radius: 18px;
-  background: rgba(255, 253, 247, 0.96);
-  line-height: 1.55;
+  border-radius: 14px;
+  background: rgba(255, 253, 247, 0.95);
+  font: inherit;
 }
 
-.proposal-submit-button {
-  width: 100%;
-  min-height: 58px;
+.proposal-form fieldset {
+  margin: 0 0 22px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
 }
 
-.proposal-submit-button:disabled {
-  cursor: wait;
-  opacity: 0.68;
-}
-
-.proposal-card .form-message {
-  margin: 16px 0 0;
-  text-align: center;
-}
-
-.proposal-letter p {
-  margin: 0 0 1.2em;
-}
-
-.proposal-letter p:last-child {
-  margin-bottom: 0;
-}
-
-.proposal-letter strong {
+.proposal-form legend {
+  padding: 0 8px;
   color: var(--navy);
-  font-weight: 700;
+  font-weight: 800;
 }
 
-.proposal-letter em {
-  font-style: italic;
-}
-
-@media (max-width: 700px) {
+@media (max-width: 600px) {
   .proposal-page {
-    width: min(100% - 20px, 980px);
-    padding: 18px 0 70px;
+    padding: 18px 12px 70px;
   }
 
   .proposal-card {
-    padding: 0 18px 30px;
-    border-radius: 24px;
-  }
-
-  .proposal-card > .eyebrow {
-    margin-top: 26px;
+    padding: 0 18px 26px;
   }
 
   .proposal-card h1 {
-    margin-bottom: 24px;
-    font-size: clamp(3rem, 15vw, 4.8rem);
-  }
-
-  .proposal-video {
-    margin-bottom: 22px;
-    border-radius: 18px;
-  }
-
-  .proposal-letter {
-    margin-bottom: 24px;
-    padding: 22px 18px;
-  }
-
-  .proposal-response-options {
-    grid-template-columns: 1fr;
-  }
-
-  .proposal-response-option span {
-    min-height: 54px;
+    font-size: clamp(3.2rem, 16vw, 5rem);
   }
 }
 
