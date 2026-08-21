@@ -8,6 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
@@ -17,93 +18,153 @@
 </head>
 
 <body>
-    <main class="admin-page">
+  <main class="admin-page">
     <a href="index.html" class="back-link">← Back to site</a>
 
     <section class="admin-shell">
-        <div class="admin-heading">
+      <div class="admin-heading">
         <p class="kicker dark">Private</p>
         <h1>Wedding Admin</h1>
         <p id="adminStatus">Sign in to manage posts.</p>
-        </div>
+      </div>
 
-        <form id="loginForm" class="admin-card">
+      <form id="loginForm" class="admin-card">
         <h2>Sign in</h2>
 
         <label>
-            Email
-            <input id="adminEmail" type="email" value="grantorsydney@grantandsydney.com" required />
+          Email
+          <input
+            id="adminEmail"
+            type="email"
+            value="grantorsydney@grantandsydney.com"
+            required
+          />
         </label>
 
         <label>
-            Password
-            <input id="adminPassword" type="password" required />
+          Password
+          <input
+            id="adminPassword"
+            type="password"
+            required
+          />
         </label>
 
-        <button type="submit" class="primary-button">Sign In</button>
-        </form>
+        <button
+          type="submit"
+          class="primary-button"
+        >
+          Sign In
+        </button>
+      </form>
 
-        <section id="adminPanel" class="hidden">
+      <section id="adminPanel" class="hidden">
         <div class="admin-actions">
-            <p>Admin tools</p>
-            <button id="signOutButton" type="button" class="secondary-admin-button">Sign Out</button>
+          <p>Admin tools</p>
+
+          <button
+            id="signOutButton"
+            type="button"
+            class="secondary-admin-button"
+          >
+            Sign Out
+          </button>
         </div>
 
         <form id="postForm" class="admin-card">
-        <h2>Create Feed Post</h2>
+          <h2>Create Feed Post</h2>
 
-        <label>
+          <label>
             Post title
-            <input id="postTitle" type="text" placeholder="Hotel block is live" required />
-        </label>
+            <input
+              id="postTitle"
+              type="text"
+              placeholder="Hotel block is live"
+              required
+            />
+          </label>
 
-        <label>
+          <label>
             Caption
-            <textarea id="postCaption" rows="5" placeholder="Write the update..." required></textarea>
-        </label>
+            <textarea
+              id="postCaption"
+              rows="5"
+              placeholder="Write the update..."
+              required
+            ></textarea>
+          </label>
 
-        <label>
+          <label>
             Optional image URL
-            <input id="postImageUrl" type="text" placeholder="images/photo-name.jpeg or https://..." />
-        </label>
+            <input
+              id="postImageUrl"
+              type="text"
+              placeholder="images/photo-name.jpeg or https://..."
+            />
+          </label>
 
-        <button type="submit" class="primary-button">Publish Post</button>
+          <button
+            type="submit"
+            class="primary-button"
+          >
+            Publish Post
+          </button>
         </form>
 
         <section class="admin-card">
-        <h2>Import Guest List</h2>
+          <h2>Import Guest List</h2>
 
-        <p>
+          <p>
             Upload a CSV exported from Google Sheets. Required columns:
-        </p>
+          </p>
 
-        <pre>householdName,firstName,lastName,maxAttendees</pre>
+          <pre>householdName,firstName,lastName,maxAttendees</pre>
 
-        <label>
+          <label>
             Guest CSV
-            <input id="guestCsvFile" type="file" accept=".csv,text/csv" />
-        </label>
+            <input
+              id="guestCsvFile"
+              type="file"
+              accept=".csv,text/csv"
+            />
+          </label>
 
-        <button id="importGuestCsvButton" type="button" class="primary-button">
+          <button
+            id="importGuestCsvButton"
+            type="button"
+            class="primary-button"
+          >
             Import Guest CSV
-        </button>
+          </button>
 
-        <p class="admin-note">
-            Each row should be one guest. Rows with the same householdName will be grouped into one invite.
+          <p class="admin-note">
+            Each CSV row is one invitation.
+            Use "&amp;" between multiple named guests.
+            If two guests have different surnames, separate the surnames with "/".
+            maxAttendees is the total number of seats allocated to that invitation;
+            any remaining seats become unnamed +1 fields.
             Do not upload this CSV to GitHub.
-        </p>
+          </p>
         </section>
 
         <section class="admin-card">
-        <h2>Recent Posts</h2>
-        <div id="adminPosts"></div>
+          <h2>Recent Posts</h2>
+          <div id="adminPosts"></div>
         </section>
-        </section>
+      </section>
     </section>
-    </main>
+  </main>
 
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
 
-    <script type="module" src="admin.js"></script>
+  <script
+    type="module"
+    src="admin.js?v=20260820-1"
+  ></script>
 </body>
 </html>
