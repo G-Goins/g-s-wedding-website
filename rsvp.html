@@ -25,25 +25,42 @@
         <p class="kicker dark">Sydney & Grant</p>
         <h1>RSVP</h1>
         <p>
-          Start by typing your full name. If your household is on the guest list,
-          we will pull up your RSVP card.
+          Enter your full name, last name, or first initial plus last name.
+          If more than one guest matches, you can choose your name from the list.
         </p>
       </div>
 
       <form id="lookupForm" class="lookup-form">
-        <label for="guestName">Your full name</label>
+        <label for="guestName">Your name</label>
+
         <div class="lookup-row">
-          <input id="guestName" type="text" autocomplete="name" placeholder="Jane Smith" required />
-          <button type="submit">Find Invite</button>
+          <input
+            id="guestName"
+            type="text"
+            autocomplete="name"
+            placeholder="Jane Smith or J Smith"
+            required
+          />
+
+          <button type="submit">
+            Find Invite
+          </button>
         </div>
       </form>
 
-      <div id="lookupMessage" class="form-message"></div>
+      <div
+        id="lookupMessage"
+        class="form-message"
+        role="status"
+        aria-live="polite"
+      ></div>
 
       <section id="inviteSection" class="invite-section hidden">
         <div class="invite-card">
           <p class="kicker dark">Invitation found</p>
+
           <h2 id="householdName"></h2>
+
           <p id="inviteHelp"></p>
 
           <form id="rsvpForm" class="rsvp-form">
@@ -51,51 +68,98 @@
               <legend>Will you attend?</legend>
 
               <label class="radio-row">
-                <input type="radio" name="attending" value="yes" required />
+                <input
+                  type="radio"
+                  name="attending"
+                  value="yes"
+                  required
+                />
+
                 <span>Joyfully accepts</span>
               </label>
 
               <label class="radio-row">
-                <input type="radio" name="attending" value="no" required />
+                <input
+                  type="radio"
+                  name="attending"
+                  value="no"
+                  required
+                />
+
                 <span>Regretfully declines</span>
               </label>
             </fieldset>
 
             <fieldset>
               <legend>Who is attending?</legend>
+
               <div id="guestCheckboxes"></div>
+
               <div id="extraGuestFields"></div>
             </fieldset>
 
             <label>
               Mailing address
-              <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
+
+              <textarea
+                id="mailingAddress"
+                rows="3"
+                placeholder="Street, City, State, ZIP"
+              ></textarea>
             </label>
 
             <label>
               Dietary notes
-              <textarea id="dietaryNotes" rows="3" placeholder="Allergies, restrictions, etc."></textarea>
+
+              <textarea
+                id="dietaryNotes"
+                rows="3"
+                placeholder="Allergies, restrictions, etc."
+              ></textarea>
             </label>
 
             <label>
               Song request
-              <input id="songRequest" type="text" placeholder="Give us a dance floor request" />
+
+              <input
+                id="songRequest"
+                type="text"
+                placeholder="Give us a dance floor request"
+              />
             </label>
 
             <label>
               Message
-              <textarea id="message" rows="3" placeholder="Optional note"></textarea>
+
+              <textarea
+                id="message"
+                rows="3"
+                placeholder="Optional note"
+              ></textarea>
             </label>
 
-            <button type="submit" class="primary-button rsvp-submit-button">Submit RSVP</button>
+            <button
+              type="submit"
+              class="primary-button rsvp-submit-button"
+            >
+              Submit RSVP
+            </button>
           </form>
         </div>
       </section>
     </section>
   </main>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
 
-  <script type="module" src="rsvp.js"></script>
+  <script
+    type="module"
+    src="rsvp.js?v=20260820-1"
+  ></script>
 </body>
 </html>

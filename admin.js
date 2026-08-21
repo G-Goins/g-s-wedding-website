@@ -35,6 +35,387 @@ const importGuestCsvButton = document.getElementById("importGuestCsvButton");
 
 const toast = document.getElementById("toast");
 
+/*
+ * RSVP lookup index builder.
+ *
+ * Add these to your existing Firestore import if they are not
+ * already imported:
+ *
+ * collection
+ * doc
+ * getDocs
+ * serverTimestamp
+ * writeBatch
+ */
+
+
+const FIRESTORE_BATCH_LIMIT = 400;
+
+const NAME_SUFFIXES = new Set([
+  "jr",
+  "sr",
+  "ii",
+  "iii",
+  "iv",
+  "v"
+]);
+
+
+/* ---------------------------------------------------------
+   Normalization
+--------------------------------------------------------- */
+
+function normalizeLookupWords(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’']/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+function normalizeLookupKey(value) {
+  return normalizeLookupWords(
+    value
+  ).replace(
+    /\s+/g,
+    "-"
+  );
+}
+
+
+function getLookupSurname(value) {
+  const parts =
+    normalizeLookupWords(value)
+      .split(" ")
+      .filter(Boolean);
+
+
+  while (
+    parts.length > 1 &&
+    NAME_SUFFIXES.has(
+      parts.at(-1)
+    )
+  ) {
+    parts.pop();
+  }
+
+
+  return parts.at(-1) || "";
+}
+
+
+/* ---------------------------------------------------------
+   Bucket construction
+--------------------------------------------------------- */
+
+function addLookupCandidate(
+  bucketMap,
+  key,
+  candidate
+) {
+  if (!key) {
+    return;
+  }
+
+
+  const bucket =
+    bucketMap.get(key) ||
+    new Map();
+
+
+  const dedupeKey =
+    `${candidate.inviteId}::${normalizeLookupKey(
+      candidate.name
+    )}`;
+
+
+  bucket.set(
+    dedupeKey,
+    candidate
+  );
+
+
+  bucketMap.set(
+    key,
+    bucket
+  );
+}
+
+
+/* ---------------------------------------------------------
+   Firestore batch helper
+--------------------------------------------------------- */
+
+async function commitOperationsInChunks(
+  operations
+) {
+  for (
+    let start = 0;
+    start < operations.length;
+    start += FIRESTORE_BATCH_LIMIT
+  ) {
+    const batch =
+      writeBatch(db);
+
+
+    const chunk =
+      operations.slice(
+        start,
+        start +
+          FIRESTORE_BATCH_LIMIT
+      );
+
+
+    for (
+      const operation of chunk
+    ) {
+      if (
+        operation.type === "delete"
+      ) {
+        batch.delete(
+          operation.ref
+        );
+      } else {
+        batch.set(
+          operation.ref,
+          operation.data
+        );
+      }
+    }
+
+
+    await batch.commit();
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Public RSVP lookup index rebuild
+--------------------------------------------------------- */
+
+async function rebuildGuestLookupIndex() {
+  /*
+   * Your spreadsheet importer should already have created /
+   * updated these invitation documents before this runs.
+   */
+  const invitesSnapshot =
+    await getDocs(
+      collection(
+        db,
+        "invites"
+      )
+    );
+
+
+  /*
+   * We clear the previous index to prevent old spreadsheet entries
+   * from continuing to resolve after a guest is removed or renamed.
+   *
+   * This assumes guestLookups is dedicated to RSVP lookup.
+   */
+  const existingLookupsSnapshot =
+    await getDocs(
+      collection(
+        db,
+        "guestLookups"
+      )
+    );
+
+
+  const exactBuckets =
+    new Map();
+
+
+  const surnameBuckets =
+    new Map();
+
+
+  for (
+    const inviteSnapshot
+    of invitesSnapshot.docs
+  ) {
+    const invite =
+      inviteSnapshot.data();
+
+
+    const guestNames =
+      Array.isArray(
+        invite.guestNames
+      )
+        ? invite.guestNames
+        : [];
+
+
+    for (
+      const rawName
+      of guestNames
+    ) {
+      const name =
+        String(
+          rawName || ""
+        ).trim();
+
+
+      const exactKey =
+        normalizeLookupKey(
+          name
+        );
+
+
+      const surname =
+        getLookupSurname(
+          name
+        );
+
+
+      if (
+        !name ||
+        !exactKey ||
+        !surname
+      ) {
+        continue;
+      }
+
+
+      const candidate = {
+        inviteId:
+          inviteSnapshot.id,
+
+        name
+      };
+
+
+      /*
+       * Exact lookup:
+       *
+       * guestLookups/charles-a-hall
+       */
+      addLookupCandidate(
+        exactBuckets,
+        exactKey,
+        candidate
+      );
+
+
+      /*
+       * Loose lookup:
+       *
+       * guestLookups/last--hall
+       */
+      addLookupCandidate(
+        surnameBuckets,
+        surname,
+        candidate
+      );
+    }
+  }
+
+
+  /* -------------------------------------------------------
+     Remove old lookup aliases
+  ------------------------------------------------------- */
+
+  await commitOperationsInChunks(
+    existingLookupsSnapshot.docs.map(
+      (lookupSnapshot) => ({
+        type: "delete",
+        ref: lookupSnapshot.ref
+      })
+    )
+  );
+
+
+  /* -------------------------------------------------------
+     Build new lookup documents
+  ------------------------------------------------------- */
+
+  const writeOperations = [];
+
+
+  for (
+    const [
+      exactKey,
+      bucket
+    ]
+    of exactBuckets
+  ) {
+    writeOperations.push({
+      type: "set",
+
+      ref: doc(
+        db,
+        "guestLookups",
+        exactKey
+      ),
+
+      data: {
+        kind: "exact",
+
+        candidates:
+          Array.from(
+            bucket.values()
+          ),
+
+        updatedAt:
+          serverTimestamp()
+      }
+    });
+  }
+
+
+  for (
+    const [
+      surname,
+      bucket
+    ]
+    of surnameBuckets
+  ) {
+    writeOperations.push({
+      type: "set",
+
+      ref: doc(
+        db,
+        "guestLookups",
+        `last--${surname}`
+      ),
+
+      data: {
+        kind: "surname",
+
+        candidates:
+          Array.from(
+            bucket.values()
+          ),
+
+        updatedAt:
+          serverTimestamp()
+      }
+    });
+  }
+
+
+  await commitOperationsInChunks(
+    writeOperations
+  );
+
+
+  return {
+    inviteCount:
+      invitesSnapshot.size,
+
+    exactLookupCount:
+      exactBuckets.size,
+
+    surnameLookupCount:
+      surnameBuckets.size
+  };
+}
+
 function showToast(message) {
   if (!toast) {
     console.log(message);
