@@ -24,7 +24,7 @@ const extraGuestFields = $("extraGuestFields");
 
 const rsvpForm = $("rsvpForm");
 
-const mailingAddress = $("mailingAddress");
+
 const dietaryNotes = $("dietaryNotes");
 const songRequest = $("songRequest");
 const message = $("message");
@@ -504,8 +504,6 @@ function renderInvite(
   }
 
 
-  mailingAddress.value =
-    invite.rsvp?.mailingAddress || "";
 
   dietaryNotes.value =
     invite.rsvp?.dietaryNotes || "";
@@ -527,16 +525,6 @@ function renderInvite(
       window.location.search
     ).get("mode");
 
-
-  if (mode === "address") {
-    window.setTimeout(() => {
-      mailingAddress.focus();
-    }, 0);
-
-    showToast(
-      "We found your invite. Add your mailing address here."
-    );
-  }
 }
 
 
@@ -1185,9 +1173,6 @@ rsvpForm.addEventListener(
       attending,
 
       attendeeNames,
-
-      mailingAddress:
-        mailingAddress.value.trim(),
 
       dietaryNotes:
         dietaryNotes.value.trim(),

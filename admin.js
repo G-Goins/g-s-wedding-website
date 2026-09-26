@@ -768,8 +768,6 @@ function defaultRsvp() {
 
     songRequest: "",
 
-    mailingAddress: "",
-
     message: ""
   };
 }
