@@ -8,31 +8,133 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 
-const $ = (id) => document.getElementById(id);
+/* ---------------------------------------------------------
+   DOM
+--------------------------------------------------------- */
+
+const $ = (id) =>
+  document.getElementById(id);
 
 
-const lookupForm = $("lookupForm");
-const guestNameInput = $("guestName");
-const lookupMessage = $("lookupMessage");
+const lookupForm =
+  $("lookupForm");
 
-const inviteSection = $("inviteSection");
-const householdName = $("householdName");
-const inviteHelp = $("inviteHelp");
+const guestNameInput =
+  $("guestName");
 
-const guestCheckboxes = $("guestCheckboxes");
-const extraGuestFields = $("extraGuestFields");
-
-const rsvpForm = $("rsvpForm");
+const lookupMessage =
+  $("lookupMessage");
 
 
-const dietaryNotes = $("dietaryNotes");
-const songRequest = $("songRequest");
-const message = $("message");
+const candidateChoices =
+  $("candidateChoices");
 
-const toast = $("toast");
+const candidateChoiceList =
+  $("candidateChoiceList");
+
+const candidatePrompt =
+  $("candidatePrompt");
 
 
-const SUFFIXES = new Set([
+const inviteSection =
+  $("inviteSection");
+
+const householdName =
+  $("householdName");
+
+const inviteHelp =
+  $("inviteHelp");
+
+
+const namedGuestResponses =
+  $("namedGuestResponses");
+
+
+const plusOneSection =
+  $("plusOneSection");
+
+const plusOneHelp =
+  $("plusOneHelp");
+
+const plusOneCount =
+  $("plusOneCount");
+
+const plusOneNameFields =
+  $("plusOneNameFields");
+
+
+const welcomeReceptionResponse =
+  $("welcomeReceptionResponse");
+
+
+const lodging =
+  $("lodging");
+
+const shuttleResponse =
+  $("shuttleResponse");
+
+const arrivalPlans =
+  $("arrivalPlans");
+
+const departurePlans =
+  $("departurePlans");
+
+const travelNotes =
+  $("travelNotes");
+
+
+const dietaryNotes =
+  $("dietaryNotes");
+
+const songRequest =
+  $("songRequest");
+
+
+const contactEmail =
+  $("contactEmail");
+
+const contactPhone =
+  $("contactPhone");
+
+
+const message =
+  $("message");
+
+
+const rsvpForm =
+  $("rsvpForm");
+
+
+const wrongInviteButton =
+  $("wrongInviteButton");
+
+const wrongInviteBottomButton =
+  $("wrongInviteBottomButton");
+
+
+const toast =
+  $("toast");
+
+
+/* ---------------------------------------------------------
+   State
+--------------------------------------------------------- */
+
+let currentInviteId = null;
+let currentInvite = null;
+
+let currentGuestNames = [];
+let currentExtraCapacity = 0;
+let currentMaxAttendees = 0;
+
+let toastTimer = null;
+
+
+/* ---------------------------------------------------------
+   Name normalization
+--------------------------------------------------------- */
+
+const NAME_SUFFIXES = new Set([
   "jr",
   "sr",
   "ii",
@@ -42,61 +144,76 @@ const SUFFIXES = new Set([
 ]);
 
 
-let currentInviteId = null;
-let currentInvite = null;
-let toastTimer = null;
-
-
 /*
- * The stylesheet already contains styles for these classes.
- * Creating the container here means no additional RSVP markup is required.
+ * These are intentionally conservative.
+ *
+ * Prefix matching still handles:
+ *
+ * Char Hall -> Charles Hall
+ * Kat Smith -> Katherine Smith
+ *
+ * These groups additionally handle:
+ *
+ * Charlie Hall -> Charles Hall
+ * Tom Smith -> Thomas Smith
  */
-const candidateChoices = document.createElement("section");
+const NICKNAME_GROUPS = [
+  ["alexander", "alex"],
+  ["andrew", "andy", "drew"],
+  ["benjamin", "ben", "benny"],
+  ["charles", "charlie", "chuck"],
+  ["christopher", "chris"],
+  ["daniel", "dan", "danny"],
+  ["elizabeth", "liz", "lizzy", "beth"],
+  ["james", "jim", "jimmy"],
+  ["jennifer", "jen", "jenny"],
+  ["john", "jack", "johnny"],
+  ["joseph", "joe", "joey"],
+  [
+    "katherine",
+    "kathryn",
+    "catherine",
+    "katie",
+    "kate",
+    "kathy",
+    "kat"
+  ],
+  ["margaret", "maggie", "meg", "peggy"],
+  ["michael", "mike"],
+  ["nicholas", "nick"],
+  ["patricia", "pat", "patty"],
+  ["rebecca", "becca", "becky"],
+  ["robert", "rob", "bob", "bobby"],
+  ["samantha", "sam"],
+  ["stephanie", "steph"],
+  ["thomas", "tom", "tommy"],
+  ["william", "will", "bill", "billy"]
+];
 
-candidateChoices.className = "candidate-choices hidden";
-candidateChoices.setAttribute("aria-live", "polite");
 
-lookupMessage.after(candidateChoices);
+const nicknameCanonical =
+  new Map();
 
 
-/* ---------------------------------------------------------
-   General UI helpers
---------------------------------------------------------- */
+for (
+  const group
+  of NICKNAME_GROUPS
+) {
+  const canonical =
+    group[0];
 
-function showToast(text) {
-  if (!toast) {
-    return;
+  for (
+    const name
+    of group
+  ) {
+    nicknameCanonical.set(
+      name,
+      canonical
+    );
   }
-
-  clearTimeout(toastTimer);
-
-  toast.textContent = text;
-  toast.classList.add("show");
-
-  toastTimer = window.setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2600);
 }
 
 
-function setLookupMessage(text = "") {
-  lookupMessage.textContent = text;
-}
-
-
-/* ---------------------------------------------------------
-   Name normalization
---------------------------------------------------------- */
-
-/*
- * Converts:
- *
- *   "Charles A. Hall" -> "charles a hall"
- *   "Mariángela"      -> "mariangela"
- *   "O'Connor"        -> "oconnor"
- *
- * The admin index builder below uses the exact same logic.
- */
 function normalizeWords(value) {
   return String(value || "")
     .trim()
@@ -110,68 +227,174 @@ function normalizeWords(value) {
 }
 
 
-/*
- * Firestore document-safe lookup key.
- *
- * "Charles A. Hall" -> "charles-a-hall"
- */
-function normalizeNameKey(value) {
-  return normalizeWords(value).replace(/\s+/g, "-");
+function normalizeSearchInput(value) {
+  const ignoredWords =
+    new Set([
+      "the",
+      "family",
+      "household"
+    ]);
+
+
+  return normalizeWords(value)
+    .split(" ")
+    .filter(
+      (word) =>
+        word &&
+        !ignoredWords.has(word)
+    )
+    .join(" ");
 }
 
 
-/*
- * Handles common suffixes correctly:
- *
- * John Hall Jr.
- *
- * surname -> hall
- * given   -> ["john"]
- */
+function normalizeNameKey(value) {
+  return normalizeWords(value)
+    .replace(/\s+/g, "-");
+}
+
+
 function nameParts(value) {
-  const parts = normalizeWords(value)
-    .split(" ")
-    .filter(Boolean);
+  const parts =
+    normalizeWords(value)
+      .split(" ")
+      .filter(Boolean);
+
 
   while (
     parts.length > 1 &&
-    SUFFIXES.has(parts.at(-1))
+    NAME_SUFFIXES.has(
+      parts.at(-1)
+    )
   ) {
     parts.pop();
   }
 
+
   return {
-    surname: parts.at(-1) || "",
-    given: parts.slice(0, -1)
+    surname:
+      parts.at(-1) || "",
+
+    given:
+      parts.slice(0, -1)
   };
 }
 
 
-/*
- * Removes duplicate attendee names while preserving their
- * original capitalization/display spelling.
- */
+function surnameVariants(value) {
+  const surname =
+    normalizeWords(value);
+
+
+  const variants =
+    new Set([
+      surname
+    ]);
+
+
+  /*
+   * Helps "The Halls" find "Hall".
+   *
+   * We still try the original form first, so names such as
+   * Jones continue to work normally.
+   */
+  if (
+    surname.length > 3 &&
+    surname.endsWith("s")
+  ) {
+    variants.add(
+      surname.slice(0, -1)
+    );
+  }
+
+
+  if (
+    surname.length > 2 &&
+    !surname.endsWith("s")
+  ) {
+    variants.add(
+      `${surname}s`
+    );
+  }
+
+
+  return Array.from(
+    variants
+  );
+}
+
+
+function namesEquivalent(
+  queryPart,
+  candidatePart
+) {
+  if (
+    candidatePart.startsWith(
+      queryPart
+    )
+  ) {
+    return true;
+  }
+
+
+  const queryCanonical =
+    nicknameCanonical.get(
+      queryPart
+    );
+
+
+  const candidateCanonical =
+    nicknameCanonical.get(
+      candidatePart
+    );
+
+
+  return Boolean(
+    queryCanonical &&
+    candidateCanonical &&
+    queryCanonical ===
+      candidateCanonical
+  );
+}
+
+
 function uniqueNames(values = []) {
-  const seen = new Set();
+  const seen =
+    new Set();
+
 
   return values
-    .map((value) => String(value || "").trim())
-    .filter((value) => {
-      const key = normalizeNameKey(value);
+    .map(
+      (value) =>
+        String(
+          value || ""
+        ).trim()
+    )
+    .filter(
+      (value) => {
+        const key =
+          normalizeNameKey(
+            value
+          );
 
-      if (!key || seen.has(key)) {
-        return false;
+
+        if (
+          !key ||
+          seen.has(key)
+        ) {
+          return false;
+        }
+
+
+        seen.add(key);
+
+        return true;
       }
-
-      seen.add(key);
-
-      return true;
-    });
+    );
 }
 
 
 /* ---------------------------------------------------------
-   Invitation capacity / +1 handling
+   General helpers
 --------------------------------------------------------- */
 
 function nonNegativeInt(value) {
@@ -183,11 +406,17 @@ function nonNegativeInt(value) {
     return null;
   }
 
-  const number = Number(value);
 
-  if (!Number.isFinite(number)) {
+  const number =
+    Number(value);
+
+
+  if (
+    !Number.isFinite(number)
+  ) {
     return null;
   }
+
 
   return Math.max(
     0,
@@ -196,66 +425,127 @@ function nonNegativeInt(value) {
 }
 
 
-/*
- * Preferred invite schema:
- *
- * {
- *   guestNames: ["Charles A. Hall"],
- *   plusOnes: 1,
- *   maxAttendees: 2
- * }
- *
- * If plusOnes exists, it is authoritative.
- *
- * For backwards compatibility, an invite containing only:
- *
- * {
- *   guestNames: ["Charles A. Hall"],
- *   maxAttendees: 2
- * }
- *
- * still produces one unnamed guest field.
- */
-function inviteCapacity(invite, guestNames) {
-  const plusOnes = [
+function inviteCapacity(
+  invite,
+  guestNames
+) {
+  const explicitPlusOnes = [
     invite.plusOnes,
     invite.plusOneCount
   ]
     .map(nonNegativeInt)
-    .find((value) => value !== null);
+    .find(
+      (value) =>
+        value !== null
+    );
 
-  if (plusOnes !== undefined) {
+
+  if (
+    explicitPlusOnes !==
+    undefined
+  ) {
     return {
-      max: guestNames.length + plusOnes,
-      extra: plusOnes
+      extra:
+        explicitPlusOnes,
+
+      max:
+        guestNames.length +
+        explicitPlusOnes
     };
   }
 
-  const configuredMax =
-    nonNegativeInt(invite.maxAttendees);
 
-  const max = Math.max(
-    guestNames.length,
-    configuredMax ?? 0,
-    1
-  );
+  const configuredMax =
+    nonNegativeInt(
+      invite.maxAttendees
+    );
+
+
+  const max =
+    Math.max(
+      guestNames.length,
+      configuredMax ?? 0,
+      1
+    );
+
 
   return {
     max,
-    extra: Math.max(
-      0,
-      max - guestNames.length
-    )
+
+    extra:
+      Math.max(
+        0,
+        max -
+        guestNames.length
+      )
   };
 }
 
 
 /* ---------------------------------------------------------
-   URL state
+   UI
 --------------------------------------------------------- */
 
-function setInviteQueryParam(inviteId) {
-  const url = new URL(window.location.href);
+function showToast(text) {
+  if (!toast) {
+    return;
+  }
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toast.textContent =
+    text;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  toastTimer =
+    window.setTimeout(
+      () => {
+        toast.classList.remove(
+          "show"
+        );
+      },
+      2800
+    );
+}
+
+
+function setLookupMessage(
+  text = ""
+) {
+  lookupMessage.textContent =
+    text;
+}
+
+
+function clearCandidates() {
+  candidateChoiceList
+    .replaceChildren();
+
+
+  candidateChoices
+    .classList.add(
+      "hidden"
+    );
+}
+
+
+function setInviteQueryParam(
+  inviteId
+) {
+  const url =
+    new URL(
+      window.location.href
+    );
+
 
   if (inviteId) {
     url.searchParams.set(
@@ -263,8 +553,11 @@ function setInviteQueryParam(inviteId) {
       inviteId
     );
   } else {
-    url.searchParams.delete("invite");
+    url.searchParams.delete(
+      "invite"
+    );
   }
+
 
   window.history.replaceState(
     {},
@@ -274,151 +567,266 @@ function setInviteQueryParam(inviteId) {
 }
 
 
-/* ---------------------------------------------------------
-   Reset helpers
---------------------------------------------------------- */
-
-function clearCandidates() {
-  candidateChoices.replaceChildren();
-
-  candidateChoices.classList.add(
-    "hidden"
-  );
-}
-
-
 function resetInvite() {
   currentInviteId = null;
   currentInvite = null;
 
-  inviteSection.classList.add(
-    "hidden"
-  );
+  currentGuestNames = [];
+  currentExtraCapacity = 0;
+  currentMaxAttendees = 0;
+
 
   rsvpForm.reset();
 
-  guestCheckboxes.replaceChildren();
-  extraGuestFields.replaceChildren();
+
+  namedGuestResponses
+    .replaceChildren();
+
+  plusOneNameFields
+    .replaceChildren();
+
+
+  plusOneSection
+    .classList.add(
+      "hidden"
+    );
+
+
+  inviteSection
+    .classList.add(
+      "hidden"
+    );
+
+
+  setInviteQueryParam(null);
 }
 
 
 /* ---------------------------------------------------------
-   Safe DOM construction
+   RSVP rendering
 --------------------------------------------------------- */
 
-/*
- * Do not interpolate Firestore guest names into innerHTML.
- *
- * textContent/value avoids a stored-XSS problem if a spreadsheet
- * cell ever contains HTML-like content.
- */
-function createCheckboxRow(
+function savedNamedResponse(
+  rsvp,
+  name
+) {
+  const responses =
+    Array.isArray(
+      rsvp?.namedGuestResponses
+    )
+      ? rsvp.namedGuestResponses
+      : [];
+
+
+  const response =
+    responses.find(
+      (item) =>
+        normalizeNameKey(
+          item?.name
+        ) ===
+        normalizeNameKey(name)
+    );
+
+
+  if (
+    response &&
+    typeof response.attending ===
+      "boolean"
+  ) {
+    return response.attending
+      ? "yes"
+      : "no";
+  }
+
+
+  /*
+   * Backwards compatibility with your old RSVP format.
+   */
+  if (
+    rsvp?.submitted
+  ) {
+    const oldAttendees =
+      new Set(
+        uniqueNames(
+          rsvp.attendeeNames
+        ).map(
+          normalizeNameKey
+        )
+      );
+
+
+    return oldAttendees.has(
+      normalizeNameKey(name)
+    )
+      ? "yes"
+      : "no";
+  }
+
+
+  return "";
+}
+
+
+function createNamedGuestRow(
   name,
-  checked
-) {
-  const label =
-    document.createElement("label");
-
-  label.className = "checkbox-row";
-
-
-  const input =
-    document.createElement("input");
-
-  input.type = "checkbox";
-  input.name = "attendeeName";
-  input.value = name;
-  input.checked = checked;
-
-
-  const span =
-    document.createElement("span");
-
-  span.textContent = name;
-
-
-  label.append(
-    input,
-    span
-  );
-
-  return label;
-}
-
-
-function createExtraGuestField(
   index,
-  value = ""
+  savedValue
 ) {
-  const label =
-    document.createElement("label");
+  const row =
+    document.createElement(
+      "article"
+    );
 
-  label.append(
-    `Additional guest ${index + 1}`
+
+  row.className =
+    "named-guest-rsvp";
+
+
+  const heading =
+    document.createElement(
+      "h4"
+    );
+
+
+  heading.textContent =
+    name;
+
+
+  const options =
+    document.createElement(
+      "div"
+    );
+
+
+  options.className =
+    "attendance-options";
+
+
+  const choices = [
+    {
+      value: "yes",
+      label: "Attending"
+    },
+    {
+      value: "no",
+      label: "Not attending"
+    }
+  ];
+
+
+  for (
+    const choice
+    of choices
+  ) {
+    const label =
+      document.createElement(
+        "label"
+      );
+
+
+    label.className =
+      "attendance-option";
+
+
+    const input =
+      document.createElement(
+        "input"
+      );
+
+
+    input.type =
+      "radio";
+
+    input.name =
+      `namedGuest-${index}`;
+
+    input.value =
+      choice.value;
+
+    input.required =
+      true;
+
+
+    if (
+      savedValue ===
+      choice.value
+    ) {
+      input.checked =
+        true;
+    }
+
+
+    const span =
+      document.createElement(
+        "span"
+      );
+
+
+    span.textContent =
+      choice.label;
+
+
+    label.append(
+      input,
+      span
+    );
+
+
+    options.append(
+      label
+    );
+  }
+
+
+  row.append(
+    heading,
+    options
   );
 
 
-  const input =
-    document.createElement("input");
-
-  input.type = "text";
-  input.className =
-    "extra-guest-input";
-
-  input.placeholder =
-    "Guest name";
-
-  input.autocomplete =
-    "name";
-
-  input.value =
-    value;
-
-
-  label.append(input);
-
-  return label;
+  return row;
 }
 
 
-/* ---------------------------------------------------------
-   Invitation rendering
---------------------------------------------------------- */
-
-function renderInvite(
-  inviteId,
-  invite
+function renderNamedGuests(
+  guestNames,
+  rsvp
 ) {
-  currentInviteId = inviteId;
-  currentInvite = invite;
-
-  clearCandidates();
-
-
-  const guestNames =
-    uniqueNames(
-      Array.isArray(invite.guestNames)
-        ? invite.guestNames
-        : []
+  const rows =
+    guestNames.map(
+      (
+        name,
+        index
+      ) =>
+        createNamedGuestRow(
+          name,
+          index,
+          savedNamedResponse(
+            rsvp,
+            name
+          )
+        )
     );
 
 
-  const savedNames =
-    uniqueNames(
-      Array.isArray(
-        invite.rsvp?.attendeeNames
-      )
-        ? invite.rsvp.attendeeNames
-        : []
+  namedGuestResponses
+    .replaceChildren(
+      ...rows
     );
+}
 
 
-  const savedKeys =
-    new Set(
-      savedNames.map(
-        normalizeNameKey
-      )
-    );
+function savedExtraNames(
+  invite,
+  guestNames
+) {
+  if (
+    Array.isArray(
+      invite.rsvp?.plusOneNames
+    )
+  ) {
+    return invite.rsvp.plusOneNames;
+  }
 
 
   const namedKeys =
@@ -429,102 +837,318 @@ function renderInvite(
     );
 
 
-  /*
-   * Anything previously submitted that is not a named invitee
-   * must have been entered into an unnamed +1 field.
-   */
-  const savedExtras =
-    savedNames.filter(
-      (name) =>
-        !namedKeys.has(
-          normalizeNameKey(name)
-        )
+  return uniqueNames(
+    invite.rsvp?.attendeeNames
+  ).filter(
+    (name) =>
+      !namedKeys.has(
+        normalizeNameKey(name)
+      )
+  );
+}
+
+
+function currentPlusOneNames() {
+  return Array.from(
+    plusOneNameFields
+      .querySelectorAll(
+        ".plus-one-name-input"
+      )
+  ).map(
+    (input) =>
+      input.value
+  );
+}
+
+
+function renderPlusOneFields(
+  count,
+  existingValues = []
+) {
+  const fields = [];
+
+
+  for (
+    let index = 0;
+    index < count;
+    index += 1
+  ) {
+    const label =
+      document.createElement(
+        "label"
+      );
+
+
+    label.textContent =
+      `Guest ${index + 1} name`;
+
+
+    const input =
+      document.createElement(
+        "input"
+      );
+
+
+    input.type =
+      "text";
+
+    input.className =
+      "plus-one-name-input";
+
+    input.autocomplete =
+      "name";
+
+    input.placeholder =
+      "Optional name";
+
+    input.value =
+      existingValues[index] ||
+      "";
+
+
+    label.append(
+      input
     );
 
 
-  const {
-    max,
-    extra
-  } = inviteCapacity(
-    invite,
-    guestNames
+    fields.push(
+      label
+    );
+  }
+
+
+  plusOneNameFields
+    .replaceChildren(
+      ...fields
+    );
+}
+
+
+function configurePlusOnes(
+  invite,
+  guestNames,
+  extraCapacity
+) {
+  plusOneCount
+    .replaceChildren();
+
+
+  for (
+    let count = 0;
+    count <= extraCapacity;
+    count += 1
+  ) {
+    const option =
+      document.createElement(
+        "option"
+      );
+
+
+    option.value =
+      String(count);
+
+    option.textContent =
+      String(count);
+
+
+    plusOneCount.append(
+      option
+    );
+  }
+
+
+  if (
+    extraCapacity === 0
+  ) {
+    plusOneSection
+      .classList.add(
+        "hidden"
+      );
+
+    return;
+  }
+
+
+  plusOneSection
+    .classList.remove(
+      "hidden"
+    );
+
+
+  plusOneHelp.textContent =
+    `Your invitation includes up to ${extraCapacity} additional guest${
+      extraCapacity === 1
+        ? ""
+        : "s"
+    }.`;
+
+
+  const oldExtras =
+    savedExtraNames(
+      invite,
+      guestNames
+    );
+
+
+  const savedCount =
+    Math.min(
+      extraCapacity,
+      nonNegativeInt(
+        invite.rsvp?.plusOneCount
+      ) ??
+      oldExtras.length
+    );
+
+
+  plusOneCount.value =
+    String(savedCount);
+
+
+  renderPlusOneFields(
+    savedCount,
+    oldExtras
   );
+}
+
+
+function populateAdditionalFields(
+  invite
+) {
+  const rsvp =
+    invite.rsvp || {};
+
+
+  welcomeReceptionResponse.value =
+    rsvp.additionalEvents
+      ?.welcomeReception ||
+    "";
+
+
+  lodging.value =
+    rsvp.travel?.lodging ||
+    "";
+
+  shuttleResponse.value =
+    rsvp.travel?.shuttle ||
+    "";
+
+  arrivalPlans.value =
+    rsvp.travel?.arrivalPlans ||
+    "";
+
+  departurePlans.value =
+    rsvp.travel?.departurePlans ||
+    "";
+
+  travelNotes.value =
+    rsvp.travel?.notes ||
+    "";
+
+
+  dietaryNotes.value =
+    rsvp.dietaryNotes ||
+    "";
+
+  songRequest.value =
+    rsvp.songRequest ||
+    "";
+
+
+  contactEmail.value =
+    rsvp.contact?.email ||
+    "";
+
+  contactPhone.value =
+    rsvp.contact?.phone ||
+    "";
+
+
+  message.value =
+    rsvp.message ||
+    "";
+}
+
+
+function renderInvite(
+  inviteId,
+  invite
+) {
+  currentInviteId =
+    inviteId;
+
+  currentInvite =
+    invite;
+
+
+  clearCandidates();
+
+
+  currentGuestNames =
+    uniqueNames(
+      Array.isArray(
+        invite.guestNames
+      )
+        ? invite.guestNames
+        : []
+    );
+
+
+  const capacity =
+    inviteCapacity(
+      invite,
+      currentGuestNames
+    );
+
+
+  currentExtraCapacity =
+    capacity.extra;
+
+  currentMaxAttendees =
+    capacity.max;
 
 
   householdName.textContent =
     invite.householdName ||
-    "Your Household";
+    currentGuestNames.join(" & ") ||
+    "Your Invitation";
 
 
   inviteHelp.textContent =
-    `You may RSVP for up to ${max} guest${
-      max === 1 ? "" : "s"
+    `This invitation allows up to ${capacity.max} guest${
+      capacity.max === 1
+        ? ""
+        : "s"
     }.`;
 
 
-  guestCheckboxes.replaceChildren(
-    ...guestNames.map((name) =>
-      createCheckboxRow(
-        name,
-        savedKeys.has(
-          normalizeNameKey(name)
-        )
-      )
-    )
+  renderNamedGuests(
+    currentGuestNames,
+    invite.rsvp
   );
 
 
-  extraGuestFields.replaceChildren(
-    ...Array.from(
-      {
-        length: extra
-      },
-      (_, index) =>
-        createExtraGuestField(
-          index,
-          savedExtras[index] || ""
-        )
-    )
+  configurePlusOnes(
+    invite,
+    currentGuestNames,
+    currentExtraCapacity
   );
 
 
-  if (
-    invite.rsvp?.attending === true
-  ) {
-    rsvpForm.elements.attending.value =
-      "yes";
-  }
-
-
-  if (
-    invite.rsvp?.attending === false
-  ) {
-    rsvpForm.elements.attending.value =
-      "no";
-  }
-
-
-
-  dietaryNotes.value =
-    invite.rsvp?.dietaryNotes || "";
-
-  songRequest.value =
-    invite.rsvp?.songRequest || "";
-
-  message.value =
-    invite.rsvp?.message || "";
-
-
-  inviteSection.classList.remove(
-    "hidden"
+  populateAdditionalFields(
+    invite
   );
 
 
-  const mode =
-    new URLSearchParams(
-      window.location.search
-    ).get("mode");
+  inviteSection
+    .classList.remove(
+      "hidden"
+    );
 
+
+  inviteSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
 
@@ -532,7 +1156,9 @@ function renderInvite(
    Invitation loading
 --------------------------------------------------------- */
 
-async function loadInvite(inviteId) {
+async function loadInvite(
+  inviteId
+) {
   if (!db) {
     setLookupMessage(
       "Firebase is not configured yet."
@@ -543,7 +1169,7 @@ async function loadInvite(inviteId) {
 
 
   setLookupMessage(
-    "Loading invite..."
+    "Loading invitation..."
   );
 
 
@@ -557,10 +1183,10 @@ async function loadInvite(inviteId) {
     );
 
 
-  if (!snapshot.exists()) {
+  if (
+    !snapshot.exists()
+  ) {
     resetInvite();
-
-    setInviteQueryParam(null);
 
     setLookupMessage(
       "We could not find that invitation."
@@ -581,39 +1207,24 @@ async function loadInvite(inviteId) {
 
 
 /* ---------------------------------------------------------
-   Lookup document parsing
+   Lookup parsing
 --------------------------------------------------------- */
 
-/*
- * New lookup documents contain:
- *
- * {
- *   candidates: [
- *     {
- *       inviteId: "...",
- *       name: "Charles A. Hall"
- *     }
- *   ]
- * }
- *
- * The legacy:
- *
- * {
- *   inviteId: "..."
- * }
- *
- * structure is also supported.
- */
 function lookupCandidates(
   data,
   fallbackName = ""
 ) {
   const values =
-    Array.isArray(data?.candidates)
+    Array.isArray(
+      data?.candidates
+    )
       ? [...data.candidates]
       : [];
 
 
+  /*
+   * Backwards compatibility with the original lookup documents.
+   */
   if (data?.inviteId) {
     values.push({
       inviteId:
@@ -622,104 +1233,113 @@ function lookupCandidates(
       name:
         data.name ||
         data.guestName ||
+        data.matchedName ||
         data.displayName ||
         fallbackName
     });
   }
 
 
-  const seen = new Set();
+  const seen =
+    new Set();
 
 
   return values
-    .map((value) => ({
-      inviteId:
-        String(
-          value?.inviteId || ""
-        ).trim(),
+    .map(
+      (value) => ({
+        inviteId:
+          String(
+            value?.inviteId ||
+            ""
+          ).trim(),
 
-      name:
-        String(
-          value?.name ||
-          value?.guestName ||
-          value?.displayName ||
-          ""
-        ).trim()
-    }))
-    .filter((value) => {
-      const key =
-        `${value.inviteId}::${normalizeNameKey(
-          value.name
-        )}`;
+        name:
+          String(
+            value?.name ||
+            value?.guestName ||
+            value?.matchedName ||
+            value?.displayName ||
+            ""
+          ).trim()
+      })
+    )
+    .filter(
+      (value) => {
+        const key =
+          `${value.inviteId}::${normalizeNameKey(
+            value.name
+          )}`;
 
 
-      if (
-        !value.inviteId ||
-        !value.name ||
-        seen.has(key)
-      ) {
-        return false;
+        if (
+          !value.inviteId ||
+          !value.name ||
+          seen.has(key)
+        ) {
+          return false;
+        }
+
+
+        seen.add(key);
+
+        return true;
       }
-
-
-      seen.add(key);
-
-      return true;
-    });
+    );
 }
 
 
 /* ---------------------------------------------------------
-   Loose matching
+   Fuzzy matching
 --------------------------------------------------------- */
 
 function fuzzyMatches(
-  query,
+  rawQuery,
   candidates
 ) {
+  const query =
+    normalizeSearchInput(
+      rawQuery
+    );
+
+
   const wanted =
     nameParts(query);
 
 
-  /*
-   * First constrain the search to the same surname.
-   */
+  const acceptableSurnames =
+    new Set(
+      surnameVariants(
+        wanted.surname
+      )
+    );
+
+
   const sameSurname =
     candidates.filter(
       (candidate) =>
-        nameParts(
-          candidate.name
-        ).surname ===
-        wanted.surname
+        acceptableSurnames.has(
+          nameParts(
+            candidate.name
+          ).surname
+        )
     );
 
 
   /*
-   * "Hall"
-   *
-   * Return every Hall candidate.
+   * "Hall" or "The Halls"
    */
-  if (!wanted.given.length) {
+  if (
+    !wanted.given.length
+  ) {
     return sameSurname;
   }
 
 
   /*
-   * Prefix matching means all of these can work:
-   *
-   * A Hall
-   * Al Hall
-   * Alice Hall
-   *
-   * It also lets:
-   *
-   * Charles Hall
-   *
-   * find:
-   *
-   * Charles A. Hall
-   *
-   * because a middle initial is not required.
+   * "C Hall"
+   * "Char Hall"
+   * "Charles Hall"
+   * "Charlie Hall"
    */
   const narrowed =
     sameSurname.filter(
@@ -731,11 +1351,12 @@ function fuzzyMatches(
 
 
         return wanted.given.every(
-          (prefix) =>
+          (queryPart) =>
             candidateGiven.some(
-              (part) =>
-                part.startsWith(
-                  prefix
+              (candidatePart) =>
+                namesEquivalent(
+                  queryPart,
+                  candidatePart
                 )
             )
         );
@@ -744,9 +1365,8 @@ function fuzzyMatches(
 
 
   /*
-   * If their surname is correct but their prefix does not quite
-   * match, show the surname candidates rather than giving a hard
-   * "not found".
+   * A correct surname is still useful even if the first-name
+   * portion was misspelled.
    */
   return narrowed.length
     ? narrowed
@@ -755,43 +1375,45 @@ function fuzzyMatches(
 
 
 /* ---------------------------------------------------------
-   Ambiguous candidate chooser
+   Candidate chooser
 --------------------------------------------------------- */
 
-function renderCandidates(candidates) {
-  candidateChoices.replaceChildren();
-
-  candidateChoices.classList.remove(
-    "hidden"
-  );
+function renderCandidates(
+  candidates
+) {
+  clearCandidates();
 
 
-  const heading =
-    document.createElement("p");
-
-  heading.textContent =
-    "Which guest are you?";
-
-
-  const list =
-    document.createElement("div");
-
-  list.className =
-    "candidate-choice-list";
-
-
-  const sorted =
-    [...candidates].sort(
-      (a, b) =>
-        a.name.localeCompare(
-          b.name
-        )
+  candidateChoices
+    .classList.remove(
+      "hidden"
     );
 
 
-  for (const candidate of sorted) {
+  candidatePrompt.textContent =
+    candidates.length === 1
+      ? "Is this you?"
+      : "Which guest are you?";
+
+
+  const sorted =
+    [...candidates]
+      .sort(
+        (a, b) =>
+          a.name.localeCompare(
+            b.name
+          )
+      );
+
+
+  for (
+    const candidate
+    of sorted
+  ) {
     const button =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
 
     button.type =
@@ -812,44 +1434,33 @@ function renderCandidates(candidates) {
             candidate.inviteId
           );
 
+
           await loadInvite(
             candidate.inviteId
           );
         } catch (error) {
-          console.error(error);
+          console.error(
+            error
+          );
+
 
           setLookupMessage(
-            "Something went wrong while opening that invitation. Try again."
+            "Something went wrong while opening that invitation. Please try again."
           );
         }
       }
     );
 
 
-    list.append(button);
+    candidateChoiceList.append(
+      button
+    );
   }
-
-
-  const note =
-    document.createElement("p");
-
-  note.className =
-    "candidate-warning";
-
-  note.textContent =
-    "Select your name to open the matching invitation.";
-
-
-  candidateChoices.append(
-    heading,
-    list,
-    note
-  );
 }
 
 
 /* ---------------------------------------------------------
-   Lookup
+   Guest lookup
 --------------------------------------------------------- */
 
 async function lookupInviteByName(
@@ -864,24 +1475,40 @@ async function lookupInviteByName(
   }
 
 
-  const exactKey =
-    normalizeNameKey(rawName);
+  const query =
+    normalizeSearchInput(
+      rawName
+    );
 
 
-  const {
-    surname
-  } = nameParts(rawName);
+  if (!query) {
+    setLookupMessage(
+      "Please enter your name or household."
+    );
+
+    return;
+  }
 
 
   resetInvite();
   clearCandidates();
 
-  setInviteQueryParam(null);
+
+  const exactKey =
+    normalizeNameKey(
+      query
+    );
 
 
-  if (!exactKey || !surname) {
+  const {
+    surname
+  } =
+    nameParts(query);
+
+
+  if (!surname) {
     setLookupMessage(
-      "Please enter your name."
+      "Please enter your last name."
     );
 
     return;
@@ -894,17 +1521,9 @@ async function lookupInviteByName(
 
 
   /*
-   * FAST PATH:
-   *
-   * Exact guest name.
-   *
-   * This remains backwards-compatible with your current:
-   *
-   * guestLookups/<normalized-name>
-   *
-   * documents.
+   * Exact-name fast path.
    */
-  const exact =
+  const exactSnapshot =
     await getDoc(
       doc(
         db,
@@ -914,39 +1533,47 @@ async function lookupInviteByName(
     );
 
 
-  if (exact.exists()) {
-    const candidates =
+  if (
+    exactSnapshot.exists()
+  ) {
+    const exactCandidates =
       lookupCandidates(
-        exact.data(),
+        exactSnapshot.data(),
         rawName
       );
 
 
-    if (candidates.length === 1) {
+    if (
+      exactCandidates.length === 1
+    ) {
       setInviteQueryParam(
-        candidates[0].inviteId
+        exactCandidates[0]
+          .inviteId
       );
 
+
       await loadInvite(
-        candidates[0].inviteId
+        exactCandidates[0]
+          .inviteId
       );
+
 
       return;
     }
 
 
-    /*
-     * Handles the unlikely but possible situation where two
-     * different invitations contain the same normalized guest name.
-     */
-    if (candidates.length > 1) {
+    if (
+      exactCandidates.length > 1
+    ) {
       setLookupMessage(
-        "We found more than one exact match. Please choose your name."
+        "We found more than one match. Please choose your name."
       );
 
+
       renderCandidates(
-        candidates
+        exactCandidates
       );
+
 
       return;
     }
@@ -954,27 +1581,60 @@ async function lookupInviteByName(
 
 
   /*
-   * LOOSE PATH:
+   * Loose path:
    *
-   * Retrieve one surname document.
-   *
-   * Example:
-   *
-   * guestLookups/last--hall
-   *
-   * This prevents the browser from downloading the entire guest list.
+   * only surname-index documents are downloaded.
    */
-  const surnameIndex =
-    await getDoc(
-      doc(
-        db,
-        "guestLookups",
-        `last--${surname}`
+  const surnameKeys =
+    surnameVariants(
+      surname
+    );
+
+
+  const snapshots =
+    await Promise.all(
+      surnameKeys.map(
+        (key) =>
+          getDoc(
+            doc(
+              db,
+              "guestLookups",
+              `last--${key}`
+            )
+          )
       )
     );
 
 
-  if (!surnameIndex.exists()) {
+  const candidates =
+    snapshots.flatMap(
+      (snapshot) =>
+        snapshot.exists()
+          ? lookupCandidates(
+              snapshot.data()
+            )
+          : []
+    );
+
+
+  const deduped =
+    Array.from(
+      new Map(
+        candidates.map(
+          (candidate) => [
+            `${candidate.inviteId}::${normalizeNameKey(
+              candidate.name
+            )}`,
+            candidate
+          ]
+        )
+      ).values()
+    );
+
+
+  if (
+    !deduped.length
+  ) {
     setLookupMessage(
       "We could not find that name. Try your last name, first initial + last name, or full name."
     );
@@ -985,16 +1645,16 @@ async function lookupInviteByName(
 
   const matches =
     fuzzyMatches(
-      rawName,
-      lookupCandidates(
-        surnameIndex.data()
-      )
+      query,
+      deduped
     );
 
 
-  if (!matches.length) {
+  if (
+    !matches.length
+  ) {
     setLookupMessage(
-      "We could not find that name. Check the spelling or email us."
+      "We could not find that name. Check the spelling and try again."
     );
 
     return;
@@ -1031,14 +1691,81 @@ lookupForm.addEventListener(
     } catch (error) {
       console.error(error);
 
+
       resetInvite();
       clearCandidates();
 
+
       setLookupMessage(
-        "Something went wrong while searching. Try again."
+        "Something went wrong while searching. Please try again."
       );
     }
   }
+);
+
+
+/* ---------------------------------------------------------
+   Plus-one controls
+--------------------------------------------------------- */
+
+plusOneCount.addEventListener(
+  "change",
+  () => {
+    const existingNames =
+      currentPlusOneNames();
+
+
+    const count =
+      Math.min(
+        currentExtraCapacity,
+        nonNegativeInt(
+          plusOneCount.value
+        ) ?? 0
+      );
+
+
+    renderPlusOneFields(
+      count,
+      existingNames
+    );
+  }
+);
+
+
+/* ---------------------------------------------------------
+   Wrong invitation
+--------------------------------------------------------- */
+
+function returnToLookup() {
+  resetInvite();
+  clearCandidates();
+
+  setLookupMessage();
+
+
+  guestNameInput.value =
+    "";
+
+
+  guestNameInput.focus();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+wrongInviteButton.addEventListener(
+  "click",
+  returnToLookup
+);
+
+
+wrongInviteBottomButton.addEventListener(
+  "click",
+  returnToLookup
 );
 
 
@@ -1058,108 +1785,104 @@ rsvpForm.addEventListener(
       !currentInvite
     ) {
       showToast(
-        "Invite is not loaded."
+        "Invitation is not loaded."
       );
 
       return;
     }
 
 
-    const attendingValue =
-      rsvpForm.elements.attending.value;
+    const namedGuestResponsesPayload =
+      [];
 
 
-    if (!attendingValue) {
-      showToast(
-        "Please choose whether you will attend."
-      );
+    const namedAttendees =
+      [];
 
-      return;
+
+    for (
+      let index = 0;
+      index < currentGuestNames.length;
+      index += 1
+    ) {
+      const name =
+        currentGuestNames[index];
+
+
+      const response =
+        rsvpForm.querySelector(
+          `input[name="namedGuest-${index}"]:checked`
+        );
+
+
+      if (!response) {
+        showToast(
+          `Please RSVP for ${name}.`
+        );
+
+        return;
+      }
+
+
+      const attending =
+        response.value ===
+        "yes";
+
+
+      namedGuestResponsesPayload.push({
+        name,
+        attending
+      });
+
+
+      if (attending) {
+        namedAttendees.push(
+          name
+        );
+      }
     }
 
 
-    const guestNames =
-      uniqueNames(
-        Array.isArray(
-          currentInvite.guestNames
-        )
-          ? currentInvite.guestNames
-          : []
+    const selectedPlusOneCount =
+      Math.min(
+        currentExtraCapacity,
+        nonNegativeInt(
+          plusOneCount.value
+        ) ?? 0
       );
 
 
-    const {
-      max,
-      extra
-    } = inviteCapacity(
-      currentInvite,
-      guestNames
-    );
-
-
-    const attending =
-      attendingValue === "yes";
-
-
-    const selected =
+    const plusOneNames =
       Array.from(
-        rsvpForm.querySelectorAll(
-          'input[name="attendeeName"]:checked'
-        )
-      ).map(
-        (input) =>
-          input.value.trim()
-      );
-
-
-    /*
-     * Only read the exact number of unnamed +1 fields allocated
-     * to this invitation.
-     */
-    const plusOnes =
-      Array.from(
-        rsvpForm.querySelectorAll(
-          ".extra-guest-input"
-        )
+        plusOneNameFields
+          .querySelectorAll(
+            ".plus-one-name-input"
+          )
       )
         .slice(
           0,
-          extra
+          selectedPlusOneCount
         )
         .map(
           (input) =>
             input.value.trim()
-        )
-        .filter(Boolean);
+        );
 
 
-    const attendeeNames =
-      attending
-        ? uniqueNames([
-            ...selected,
-            ...plusOnes
-          ])
-        : [];
+    const totalAttending =
+      namedAttendees.length +
+      selectedPlusOneCount;
 
 
     if (
-      attending &&
-      !attendeeNames.length
+      totalAttending >
+      currentMaxAttendees
     ) {
       showToast(
-        "Select at least one attendee."
-      );
-
-      return;
-    }
-
-
-    if (
-      attendeeNames.length > max
-    ) {
-      showToast(
-        `This invite allows up to ${max} guest${
-          max === 1 ? "" : "s"
+        `This invitation allows up to ${currentMaxAttendees} guest${
+          currentMaxAttendees === 1
+            ? ""
+            : "s"
         }.`
       );
 
@@ -1167,12 +1890,64 @@ rsvpForm.addEventListener(
     }
 
 
-    const rsvp = {
-      submitted: true,
+    const attendeeNames =
+      uniqueNames([
+        ...namedAttendees,
 
-      attending,
+        ...plusOneNames.filter(
+          Boolean
+        )
+      ]);
+
+
+    const rsvp = {
+      submitted:
+        true,
+
+      attending:
+        totalAttending > 0,
 
       attendeeNames,
+
+      totalAttending,
+
+      namedGuestResponses:
+        namedGuestResponsesPayload,
+
+      plusOneCount:
+        selectedPlusOneCount,
+
+      plusOneNames,
+
+      additionalEvents: {
+        welcomeReception:
+          welcomeReceptionResponse.value
+      },
+
+      travel: {
+        lodging:
+          lodging.value.trim(),
+
+        shuttle:
+          shuttleResponse.value,
+
+        arrivalPlans:
+          arrivalPlans.value.trim(),
+
+        departurePlans:
+          departurePlans.value.trim(),
+
+        notes:
+          travelNotes.value.trim()
+      },
+
+      contact: {
+        email:
+          contactEmail.value.trim(),
+
+        phone:
+          contactPhone.value.trim()
+      },
 
       dietaryNotes:
         dietaryNotes.value.trim(),
@@ -1194,16 +1969,13 @@ rsvpForm.addEventListener(
         ),
         {
           rsvp,
+
           rsvpUpdatedAt:
             serverTimestamp()
         }
       );
 
 
-      /*
-       * Keep local state synchronized so another save during the
-       * same browser session uses the current RSVP.
-       */
       currentInvite = {
         ...currentInvite,
         rsvp
@@ -1211,13 +1983,14 @@ rsvpForm.addEventListener(
 
 
       showToast(
-        "RSVP saved."
+        "Your RSVP has been saved."
       );
     } catch (error) {
       console.error(error);
 
+
       showToast(
-        "Could not save RSVP. Please try again."
+        "Could not save your RSVP. Please try again."
       );
     }
   }
@@ -1225,13 +1998,15 @@ rsvpForm.addEventListener(
 
 
 /* ---------------------------------------------------------
-   Direct invitation URL support
+   Direct invitation URL
 --------------------------------------------------------- */
 
 window.addEventListener(
   "load",
   async () => {
-    if (!firebaseConfigured) {
+    if (
+      !firebaseConfigured
+    ) {
       setLookupMessage(
         "Firebase config is still using placeholder values."
       );
@@ -1243,7 +2018,9 @@ window.addEventListener(
     const inviteId =
       new URLSearchParams(
         window.location.search
-      ).get("invite");
+      ).get(
+        "invite"
+      );
 
 
     if (!inviteId) {
@@ -1258,9 +2035,9 @@ window.addEventListener(
     } catch (error) {
       console.error(error);
 
+
       resetInvite();
 
-      setInviteQueryParam(null);
 
       setLookupMessage(
         "Something went wrong while opening that invitation. Try your name instead."

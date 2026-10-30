@@ -1492,6 +1492,221 @@ textarea::placeholder {
 }
 
 /* ---------------------------------------------------------
+   Expanded RSVP experience
+--------------------------------------------------------- */
+
+.invitation-heading {
+  display: flex;
+  gap: 24px;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.invitation-heading h2 {
+  margin-bottom: 8px;
+}
+
+.invitation-heading p:last-child {
+  margin-bottom: 0;
+}
+
+.wrong-invite-button {
+  flex: 0 0 auto;
+  margin-top: 20px;
+}
+
+.rsvp-form {
+  display: grid;
+  gap: 18px;
+}
+
+.rsvp-section-card {
+  padding: 22px;
+  border: 1px solid rgb(13 47 143 / 22%);
+  border-radius: var(--radius-md);
+  background: rgb(246 241 230 / 82%);
+}
+
+.rsvp-event-section {
+  background: rgb(230 69 52 / 7%);
+}
+
+.rsvp-travel-section {
+  background: rgb(169 203 239 / 19%);
+}
+
+.rsvp-contact-section {
+  background: rgb(242 201 76 / 12%);
+}
+
+.rsvp-section-heading {
+  margin-bottom: 20px;
+}
+
+.rsvp-section-heading .eyebrow {
+  margin-bottom: 7px;
+}
+
+.rsvp-section-heading h3 {
+  margin: 0 0 7px;
+  color: var(--cobalt);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1;
+}
+
+.rsvp-section-heading p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.named-guest-rsvp {
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+
+.named-guest-rsvp:first-child {
+  border-top: 0;
+}
+
+.named-guest-rsvp h4 {
+  margin: 0 0 12px;
+  color: var(--cobalt);
+  font-size: 1rem;
+}
+
+.attendance-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.attendance-option {
+  position: relative;
+  display: block !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+.attendance-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.attendance-option span {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  color: var(--cobalt);
+  border: 2px solid rgb(13 47 143 / 28%);
+  background: var(--ivory);
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-align: center;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.attendance-option span:hover {
+  border-color: var(--cobalt);
+  transform: translateY(-1px);
+}
+
+.attendance-option input:checked + span {
+  color: var(--ivory);
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+}
+
+.attendance-option input:focus-visible + span {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+.additional-event-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(220px, 1fr);
+  gap: 20px;
+  align-items: end;
+  padding: 18px;
+  border: 1px solid rgb(230 69 52 / 24%);
+  border-radius: 14px;
+  background: rgb(246 241 230 / 70%);
+}
+
+.additional-event-card strong {
+  display: block;
+  color: var(--cobalt);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.5rem;
+}
+
+.additional-event-card p {
+  margin: 4px 0 0;
+}
+
+.additional-event-card label {
+  margin-bottom: 0;
+}
+
+#plusOneNameFields {
+  display: grid;
+  gap: 4px;
+  margin-top: 18px;
+}
+
+.rsvp-submit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 8px;
+}
+
+.rsvp-submit-row button {
+  min-height: 54px;
+}
+
+.rsvp-submit-button {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .invitation-heading {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .wrong-invite-button {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .attendance-options {
+    grid-template-columns: 1fr;
+  }
+
+  .additional-event-card {
+    grid-template-columns: 1fr;
+  }
+
+  .rsvp-submit-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------
    Registry page
 --------------------------------------------------------- */
 

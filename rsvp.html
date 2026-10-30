@@ -8,12 +8,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="style.css?v=20260805-2" />
+  <link rel="stylesheet" href="style.css?v=20261030-1" />
 </head>
 
 <body>
@@ -23,22 +24,26 @@
     <section class="rsvp-shell">
       <div class="rsvp-intro">
         <p class="kicker dark">Sydney & Grant</p>
+
         <h1>RSVP</h1>
+
         <p>
-          Enter your full name, last name, or first initial plus last name.
-          If more than one guest matches, you can choose your name from the list.
+          Find your invitation using your name or household name.
+          You can use a full name, last name, or first initial plus last name.
         </p>
       </div>
 
       <form id="lookupForm" class="lookup-form">
-        <label for="guestName">Your name</label>
+        <label for="guestName">
+          Your name or household
+        </label>
 
         <div class="lookup-row">
           <input
             id="guestName"
             type="text"
             autocomplete="name"
-            placeholder="Jane Smith or J Smith"
+            placeholder="Jane Smith or Smith"
             required
           />
 
@@ -55,95 +60,295 @@
         aria-live="polite"
       ></div>
 
-      <section id="inviteSection" class="invite-section hidden">
+      <section
+        id="candidateChoices"
+        class="candidate-choices hidden"
+        aria-live="polite"
+      >
+        <p id="candidatePrompt">
+          Which guest are you?
+        </p>
+
+        <div
+          id="candidateChoiceList"
+          class="candidate-choice-list"
+        ></div>
+
+        <p class="candidate-warning">
+          Select your name to open the correct invitation.
+        </p>
+      </section>
+
+      <section
+        id="inviteSection"
+        class="invite-section hidden"
+      >
         <div class="invite-card">
-          <p class="kicker dark">Invitation found</p>
+          <div class="invitation-heading">
+            <div>
+              <p class="kicker dark">
+                Your invitation
+              </p>
 
-          <h2 id="householdName"></h2>
+              <h2 id="householdName"></h2>
 
-          <p id="inviteHelp"></p>
-
-          <form id="rsvpForm" class="rsvp-form">
-            <fieldset>
-              <legend>Will you attend?</legend>
-
-              <label class="radio-row">
-                <input
-                  type="radio"
-                  name="attending"
-                  value="yes"
-                  required
-                />
-
-                <span>Joyfully accepts</span>
-              </label>
-
-              <label class="radio-row">
-                <input
-                  type="radio"
-                  name="attending"
-                  value="no"
-                  required
-                />
-
-                <span>Regretfully declines</span>
-              </label>
-            </fieldset>
-
-            <fieldset>
-              <legend>Who is attending?</legend>
-
-              <div id="guestCheckboxes"></div>
-
-              <div id="extraGuestFields"></div>
-            </fieldset>
-
-            <!-- <label>
-              Mailing address
-
-              <textarea
-                id="mailingAddress"
-                rows="3"
-                placeholder="Street, City, State, ZIP"
-              ></textarea>
-            </label> -->
-
-            <label>
-              Dietary notes
-
-              <textarea
-                id="dietaryNotes"
-                rows="3"
-                placeholder="Allergies, restrictions, etc."
-              ></textarea>
-            </label>
-
-            <label>
-              Song request
-
-              <input
-                id="songRequest"
-                type="text"
-                placeholder="Give us a dance floor request"
-              />
-            </label>
-
-            <label>
-              Message
-
-              <textarea
-                id="message"
-                rows="3"
-                placeholder="Optional note"
-              ></textarea>
-            </label>
+              <p id="inviteHelp"></p>
+            </div>
 
             <button
-              type="submit"
-              class="primary-button rsvp-submit-button"
+              id="wrongInviteButton"
+              type="button"
+              class="secondary-admin-button wrong-invite-button"
             >
-              Submit RSVP
+              Wrong group?
             </button>
+          </div>
+
+          <form id="rsvpForm" class="rsvp-form">
+
+            <!-- Wedding RSVP -->
+            <section class="rsvp-section-card">
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">Wedding Day</p>
+                <h3>Who will be joining us?</h3>
+
+                <p>
+                  Saturday, May 1, 2027
+                </p>
+              </div>
+
+              <div id="namedGuestResponses"></div>
+            </section>
+
+            <!-- Plus Ones -->
+            <section
+              id="plusOneSection"
+              class="rsvp-section-card hidden"
+            >
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">Plus One</p>
+                <h3>Additional Guests</h3>
+
+                <p id="plusOneHelp"></p>
+              </div>
+
+              <label for="plusOneCount">
+                How many additional guests are attending?
+
+                <select id="plusOneCount">
+                  <option value="0">0</option>
+                </select>
+              </label>
+
+              <div id="plusOneNameFields"></div>
+            </section>
+
+            <!-- Additional Event -->
+            <section class="rsvp-section-card rsvp-event-section">
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">Additional Event RSVP</p>
+                <h3>Welcome Party</h3>
+              </div>
+
+              <div class="additional-event-card">
+                <div>
+                  <strong>Friday, April 30</strong>
+
+                  <p>
+                    6:00 PM
+                  </p>
+                </div>
+
+                <label for="welcomeReceptionResponse">
+                  Will your household attend?
+
+                  <select
+                    id="welcomeReceptionResponse"
+                    required
+                  >
+                    <option value="">
+                      Select one
+                    </option>
+
+                    <option value="attending">
+                      Attending
+                    </option>
+
+                    <option value="not-attending">
+                      Not attending
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </section>
+
+            <!-- Travel -->
+            <section class="rsvp-section-card rsvp-travel-section">
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">Travel & Stay</p>
+                <h3>Help us plan transportation</h3>
+
+                <p>
+                  These details are optional, but they help us coordinate
+                  hotel and shuttle plans.
+                </p>
+              </div>
+
+              <label>
+                Where are you staying?
+
+                <input
+                  id="lodging"
+                  type="text"
+                  placeholder="Hotel, rental, or area"
+                />
+              </label>
+
+              <label>
+                Will you use wedding transportation?
+
+                <select id="shuttleResponse">
+                  <option value="">
+                    Select one (optional)
+                  </option>
+
+                  <option value="yes">
+                    Yes
+                  </option>
+
+                  <option value="no">
+                    No
+                  </option>
+
+                  <option value="unsure">
+                    Not sure yet
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                Arrival plans
+
+                <input
+                  id="arrivalPlans"
+                  type="text"
+                  placeholder="Optional — date, time, airport"
+                />
+              </label>
+
+              <label>
+                Departure plans
+
+                <input
+                  id="departurePlans"
+                  type="text"
+                  placeholder="Optional — date, time, airport"
+                />
+              </label>
+
+              <label>
+                Anything else that would make travel easier?
+
+                <textarea
+                  id="travelNotes"
+                  rows="3"
+                  placeholder="Optional — accessibility, carpooling, or other travel help"
+                ></textarea>
+              </label>
+            </section>
+
+            <!-- Food / Music -->
+            <section class="rsvp-section-card">
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">A Few Details</p>
+                <h3>Food & Dance Floor</h3>
+              </div>
+
+              <label>
+                Dietary notes
+
+                <textarea
+                  id="dietaryNotes"
+                  rows="3"
+                  placeholder="Allergies, restrictions, etc."
+                ></textarea>
+              </label>
+
+              <label>
+                Song request
+
+                <input
+                  id="songRequest"
+                  type="text"
+                  placeholder="Give us a dance floor request"
+                />
+              </label>
+            </section>
+
+            <!-- Contact -->
+            <section class="rsvp-section-card rsvp-contact-section">
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">Contact Information</p>
+                <h3>In case we need to reach you</h3>
+              </div>
+
+              <label>
+                Email
+
+                <input
+                  id="contactEmail"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="Optional"
+                />
+              </label>
+
+              <label>
+                Mobile number
+
+                <input
+                  id="contactPhone"
+                  type="tel"
+                  autocomplete="tel"
+                  placeholder="Optional"
+                />
+              </label>
+            </section>
+
+            <!-- Final note -->
+            <section class="rsvp-section-card">
+              <div class="rsvp-section-heading">
+                <p class="eyebrow">One Last Thing</p>
+                <h3>Leave us a note</h3>
+              </div>
+
+              <label>
+                Message
+
+                <textarea
+                  id="message"
+                  rows="4"
+                  placeholder="Optional note for Sydney & Grant"
+                ></textarea>
+              </label>
+            </section>
+
+            <div class="rsvp-submit-row">
+              <button
+                type="submit"
+                class="primary-button rsvp-submit-button"
+              >
+                Send RSVP
+              </button>
+
+              <button
+                id="wrongInviteBottomButton"
+                type="button"
+                class="secondary-admin-button"
+              >
+                Wrong group?
+              </button>
+            </div>
           </form>
         </div>
       </section>
@@ -159,7 +364,7 @@
 
   <script
     type="module"
-    src="rsvp.js?v=20260820-1"
+    src="rsvp.js?v=20261030-1"
   ></script>
 </body>
 </html>
